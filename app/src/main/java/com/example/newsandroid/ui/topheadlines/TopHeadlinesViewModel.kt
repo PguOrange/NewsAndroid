@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.network.NewsApi
+import com.example.newsandroid.network.NewsCollection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,23 +23,21 @@ class TopHeadlinesViewModel : ViewModel() {
     private var viewModelJob = Job()
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main )
-
     init {
         getTopHeadlinesProperties()
     }
 
     private fun getTopHeadlinesProperties() {
         //_response.value = "Set the News API Response here!"
-        NewsApi.retrofitService.getProperties("FR","dc62650aa1db4ea398e6dda8f39c2612").enqueue(object : Callback<String> {
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("getProperties", "Failure " + t.message)
+        coroutineScope.launch {
+            var getPropertiesDeferred = NewsApi.retrofitService.getProperties("FR","dc62650aa1db4ea398e6dda8f39c2612")
+            try {
+                var listResult = getPropertiesDeferred.await()
+                Log.d("getProperties", listResult.articles.size.toString())
+            }catch (e: Exception){
+                Log.d("getProperties", "Failure "+e.message)
             }
-
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                Log.d("getProperties", response.body().toString())
-            }
-
-        })
+        }
     }
 
     override fun onCleared() {
