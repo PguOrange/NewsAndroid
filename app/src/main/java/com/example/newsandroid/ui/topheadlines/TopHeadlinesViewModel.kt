@@ -1,28 +1,27 @@
 package com.example.newsandroid.ui.topheadlines
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.network.NewsApi
-import com.example.newsandroid.network.NewsCollection
+import com.example.newsandroid.network.NewsProperty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class TopHeadlinesViewModel : ViewModel() {
-    private val _response = MutableLiveData<String>()
+class TopHeadlinesViewModel() : ViewModel() {
+    private val _property = MutableLiveData<List<NewsProperty>>()
 
-    val response: LiveData<String>
-        get() = _response
+    val property: LiveData<List<NewsProperty>>
+        get() = _property
 
     private var viewModelJob = Job()
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main )
+
     init {
         getTopHeadlinesProperties()
     }
@@ -33,9 +32,14 @@ class TopHeadlinesViewModel : ViewModel() {
             var getPropertiesDeferred = NewsApi.retrofitService.getProperties("FR","dc62650aa1db4ea398e6dda8f39c2612")
             try {
                 var listResult = getPropertiesDeferred.await()
+
+                if (listResult.articles.size > 0) {
+                    _property.value = listResult.articles
+                }
                 Log.d("getProperties", listResult.articles.size.toString())
             }catch (e: Exception){
                 Log.d("getProperties", "Failure "+e.message)
+                //_property.value = "Failure: ${e.message}"
             }
         }
     }
