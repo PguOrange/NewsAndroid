@@ -25,7 +25,9 @@ class TopHeadlinesFragment : Fragment() {
         val binding: TopHeadlinesFragmentBinding = DataBindingUtil.inflate(
         inflater, R.layout.top_headlines_fragment, container, false)
 
-        val viewModelFactory = TopHeadlinesViewModelFactory()
+        val application = requireNotNull(this.activity).application
+
+        val viewModelFactory = TopHeadlinesViewModelFactory(application)
 
         val topHeadlinesViewModel =
             ViewModelProviders.of(
@@ -38,7 +40,7 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.status.observe(viewLifecycleOwner, Observer {
             it.let {
-                when(it){
+                when (it) {
                     NewsApiStatus.LOADING -> {
                         binding.statusImage.visibility = View.VISIBLE
                         binding.statusImage.setImageResource(R.drawable.loading_animation)
@@ -67,7 +69,5 @@ class TopHeadlinesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val imageNoConnection: ImageView = view.findViewById(R.id.status_image)
-
     }
 }

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
-import com.example.newsandroid.network.NewsProperty
+import com.example.newsandroid.domain.NewsProperty
 
 class TopHeadlinesAdapter : RecyclerView.Adapter<TopHeadlinesAdapter.ViewHolder>() {
 

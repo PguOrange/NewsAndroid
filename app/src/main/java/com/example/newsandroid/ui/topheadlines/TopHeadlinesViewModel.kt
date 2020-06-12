@@ -1,11 +1,14 @@
 package com.example.newsandroid.ui.topheadlines
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.newsandroid.database.getDatabase
 import com.example.newsandroid.network.NewsApi
-import com.example.newsandroid.network.NewsProperty
+import com.example.newsandroid.domain.NewsProperty
+import com.example.newsandroid.repository.NewsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,17 +17,15 @@ import kotlinx.coroutines.launch
 
 enum class NewsApiStatus { LOADING, ERROR, DONE }
 
-class TopHeadlinesViewModel() : ViewModel() {
+class TopHeadlinesViewModel(application: Application) : ViewModel() {
+
+    private val newsRepository = NewsRepository(getDatabase(application))
 
     private val _status = MutableLiveData<NewsApiStatus>()
 
     val status: LiveData<NewsApiStatus>
         get() = _status
-
-    private val _property = MutableLiveData<List<NewsProperty>>()
-
-    val property: LiveData<List<NewsProperty>>
-        get() = _property
+    val property = newsRepository.news
 
     private var viewModelJob = Job()
 
@@ -35,17 +36,14 @@ class TopHeadlinesViewModel() : ViewModel() {
     }
 
     private fun getTopHeadlinesProperties() {
-        //_response.value = "Set the News API Response here!"
         coroutineScope.launch {
-            var getPropertiesDeferred = NewsApi.retrofitService.getProperties("FR","dc62650aa1db4ea398e6dda8f39c2612")
             try {
                 _status.value = NewsApiStatus.LOADING
-                var listResult = getPropertiesDeferred.await()
+                newsRepository.refreshNews()
                 _status.value = NewsApiStatus.DONE
-                _property.value = listResult.articles
             }catch (e: Exception){
+                if (property.value.isNullOrEmpty())
                 _status.value = NewsApiStatus.ERROR
-                _property.value = ArrayList()
             }
         }
     }
