@@ -40,6 +40,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
             try {
                 _status.value = NewsApiStatus.LOADING
                 newsRepository.refreshNews()
+                Log.d("refreshNews", "News refreshed")
                 _status.value = NewsApiStatus.DONE
             }catch (e: Exception){
                 if (property.value.isNullOrEmpty())
