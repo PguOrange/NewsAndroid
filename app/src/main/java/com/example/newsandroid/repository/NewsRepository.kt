@@ -18,7 +18,7 @@ class NewsRepository(private val database: NewsDatabase) {
     suspend fun refreshNews() {
         withContext(Dispatchers.IO) {
             val newsCollection =
-                NewsApi.retrofitService.getProperties("FR", "dc62650aa1db4ea398e6dda8f39c2612")
+                NewsApi.retrofitService.getProperties("fr", "dc62650aa1db4ea398e6dda8f39c2612")
                     .await()
             database.newsDao.insertAll(convertAPIArticleToDBArticle(newsCollection.articles))
         }
@@ -27,6 +27,7 @@ class NewsRepository(private val database: NewsDatabase) {
     private fun convertAPIArticleToDBArticle(apiArticles: List<NewsProperty>): List<DatabaseNews> {
         return apiArticles.map {
             DatabaseNews(
+                id = apiArticles.indexOf(it),
                 title = it.title,
                 author = if (it.author == null) "" else it.author,
                 description = if (it.description == null) "" else it.description
