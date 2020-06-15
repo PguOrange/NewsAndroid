@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">NewsAndroid</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_label_1">Top Headlines</string>
+    <string name="text_label_2">Everything</string>
 </resources>

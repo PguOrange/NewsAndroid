@@ -8,6 +8,9 @@
     <fragment
         android:id="@+id/topHeadlinesFragment"
         android:name="com.example.newsandroid.ui.topheadlines.TopHeadlinesFragment"
-        android:label="TopHeadlinesFragment"
         tools:layout="@layout/top_headlines_fragment"/>
+    <fragment
+        android:id="@+id/everythingFragment"
+        android:name="com.example.newsandroid.ui.everything.EverythingFragment"
+        tools:layout="@layout/everything_fragment" />
 </navigation>
