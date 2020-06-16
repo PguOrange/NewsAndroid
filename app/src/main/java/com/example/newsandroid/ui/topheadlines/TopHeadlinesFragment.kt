@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.newsandroid.R
 import com.example.newsandroid.databinding.TopHeadlinesFragmentBinding
+import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.top_headlines_fragment.view.*
 
@@ -53,6 +54,29 @@ class TopHeadlinesFragment : Fragment() {
                     NewsApiStatus.DONE -> {
                         binding.statusImage.visibility = View.GONE
                     }
+                }
+            }
+        })
+
+
+        topHeadlinesViewModel.countryList.observe(viewLifecycleOwner, object :Observer<List<String>> {
+            override fun onChanged(data: List<String>?) {
+                data ?: return
+                val chipGroup = binding.countryList
+                val inflator = LayoutInflater.from(chipGroup.context)
+                val children = data.map { countryName ->
+                    val chip = inflator.inflate(R.layout.country, chipGroup, false) as Chip
+                    chip.text = countryName
+                    chip.tag = countryName
+                    chip.setOnCheckedChangeListener { button, isChecked ->
+                        topHeadlinesViewModel.onFilterChanged(button.tag as String, isChecked)
+                    }
+                    chip
+                }
+                chipGroup.removeAllViews()
+
+                for (chip in children) {
+                    chipGroup.addView(chip)
                 }
             }
         })
