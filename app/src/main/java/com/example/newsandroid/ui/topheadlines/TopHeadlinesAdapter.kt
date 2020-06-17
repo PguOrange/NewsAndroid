@@ -8,19 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
 import com.example.newsandroid.domain.NewsProperty
 
-class TopHeadlinesAdapter : RecyclerView.Adapter<TopHeadlinesAdapter.ViewHolder>() {
+class TopHeadlinesAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<TopHeadlinesAdapter.ViewHolder>() {
 
-    var data =  listOf<NewsProperty>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount() = data.size
+    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = data[position]
-        holder.bind(item)
+        val items = items[position]
+        holder.bind(items)
     }
 
 

@@ -19,13 +19,14 @@ abstract class NewsDatabase: RoomDatabase() {
 }
 
 private lateinit var INSTANCE: NewsDatabase
+private val dbName = "news"
 
 fun getDatabase(context: Context): NewsDatabase {
     synchronized(NewsDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(context.applicationContext,
                 NewsDatabase::class.java,
-                "news").build()
+                dbName).build()
         }
     }
     return INSTANCE
