@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.database.getDatabase
-import com.example.newsandroid.network.NewsApi
-import com.example.newsandroid.domain.NewsProperty
 import com.example.newsandroid.repository.NewsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
