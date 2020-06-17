@@ -2,6 +2,7 @@ package com.example.newsandroid.util
 
 import com.example.newsandroid.database.DatabaseNews
 import com.example.newsandroid.domain.NewsProperty
+import com.example.newsandroid.enums.Country
 
 fun convertAPIArticleToDBArticle(apiArticles: List<NewsProperty>): List<DatabaseNews> {
     return apiArticles.map {
@@ -31,4 +32,11 @@ fun convertDBArticleToAPIArticle(dbArticles: List<DatabaseNews>): List<NewsPrope
             content = it.content
         )
     }
+}
+
+fun createChipList(): List<String>{
+    val list : List<String> = listOf(
+        Country.US.toString(),
+        Country.FR.toString())
+    return list
 }

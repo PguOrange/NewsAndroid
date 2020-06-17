@@ -1,8 +1,10 @@
 package com.example.newsandroid.ui.topheadlines
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,8 +13,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.google.android.material.chip.Chip
-import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.top_headlines_fragment.view.*
+import kotlinx.android.synthetic.main.country.*
+import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
 
 class TopHeadlinesFragment : Fragment() {
@@ -58,12 +60,13 @@ class TopHeadlinesFragment : Fragment() {
         topHeadlinesViewModel.countryList.observe(viewLifecycleOwner, object :Observer<List<String>> {
             override fun onChanged(data: List<String>?) {
                 data ?: return
-                val chipGroup = binding.countryList
+                val chipGroup = country_list
                 val inflator = LayoutInflater.from(chipGroup.context)
                 val children = data.map { countryName ->
                     val chip = inflator.inflate(R.layout.country, chipGroup, false) as Chip
                     chip.text = countryName
                     chip.tag = countryName
+
                     chip.setOnCheckedChangeListener { button, isChecked ->
                         topHeadlinesViewModel.onFilterChanged(button.tag as String, isChecked)
                     }

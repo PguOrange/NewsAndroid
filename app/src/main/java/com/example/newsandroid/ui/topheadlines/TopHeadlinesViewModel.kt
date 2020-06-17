@@ -5,9 +5,12 @@ import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.database.getDatabase
+import com.example.newsandroid.enums.Country
 import com.example.newsandroid.repository.NewsRepository
+import com.example.newsandroid.util.createChipList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,36 +29,13 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     private val _countryList = MutableLiveData<List<String>>()
 
-    //private var _countryList: MutableLiveData<List<String>>? = null
-
     val countryList: LiveData<List<String>>
         get() = _countryList
 
-  /*  fun getCountryList(): LiveData<List<String>>? {
-        if (_countryList == null) {
-            _countryList = MutableLiveData()
-            loadFruits()
-        }
-        return _countryList
-    }
-*/
-    private fun loadFruits() {
-        // do async operation to fetch users
-        val myHandler = Handler()
-        myHandler.postDelayed({
-            val fruitsStringList: MutableList<String> = ArrayList()
-            fruitsStringList.add("Mango")
-            fruitsStringList.add("Apple")
-            fruitsStringList.add("Orange")
-            fruitsStringList.add("Banana")
-            fruitsStringList.add("Grapes")
-            _countryList.value = fruitsStringList
-        }, 5000)
-    }
     val status: LiveData<NewsApiStatus>
         get() = _status
 
-    val countries : String = "FR"
+    private val countries = createChipList()
 
 
     val property = newsRepository.news
@@ -75,7 +55,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
                 newsRepository.refreshNews()
                 Log.d("refreshNews", "News refreshed")
                 _status.value = NewsApiStatus.DONE
-                loadFruits()
+                _countryList.value = countries
             }catch (e: Exception){
                 if (property.value.isNullOrEmpty())
                 _status.value = NewsApiStatus.ERROR
