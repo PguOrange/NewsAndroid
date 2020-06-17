@@ -7,7 +7,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 private val BASE_URL = "http://newsapi.org/v2/"
 
-class RetrofitClientInstance {
+class ApiProvider {
 
     fun getInstance(): Retrofit {
 
