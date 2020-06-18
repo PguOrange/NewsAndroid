@@ -12,9 +12,6 @@ import com.example.newsandroid.util.convertDBArticleToAPIArticle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-//private val newsApiService : NewsApiService = ApiProvider().getInstance().create(NewsApiService::class.java)
-//private val api_key = BuildConfig.ApiKey
-
 class NewsRepository(private val database: NewsDatabase, private val newsApiService: NewsApiService? = ApiProvider.getInstance()) {
     val news: LiveData<List<NewsProperty>> = Transformations.map(database.newsDao.getNews()) {
         convertDBArticleToAPIArticle(it)
