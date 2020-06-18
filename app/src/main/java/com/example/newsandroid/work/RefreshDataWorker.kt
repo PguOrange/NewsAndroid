@@ -3,7 +3,7 @@ package com.example.newsandroid.work
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.newsandroid.database.getDatabase
+import com.example.newsandroid.database.DBProvider
 import com.example.newsandroid.repository.NewsRepository
 import retrofit2.HttpException
 
@@ -16,7 +16,7 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters) :
 
 
     override suspend fun doWork(): Result {
-        val database = getDatabase(applicationContext)
+        val database = DBProvider.getDatabase(applicationContext)
         val repository = NewsRepository(database)
         try {
             repository.refreshNews()

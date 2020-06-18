@@ -19,7 +19,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         each { type ->
             type.buildConfigField 'String', "ApiKey", NEWS_API_KEY
-            type.resValue 'string', "api_key", NEWS_API_KEY
+            type.buildConfigField 'String', 'BaseURL', '"http://newsapi.org/v2/"'
         }
     }
 

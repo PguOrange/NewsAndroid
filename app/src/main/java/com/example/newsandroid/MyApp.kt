@@ -14,18 +14,6 @@ import java.util.concurrent.TimeUnit
 class MyApp: Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
-        init {
-            instance = this
-        }
-
-        companion object {
-            private var instance: MyApp? = null
-
-            fun applicationContext() : Context {
-                return instance!!.applicationContext
-            }
-        }
-
         override fun onCreate() {
             super.onCreate()
             delayedInit()

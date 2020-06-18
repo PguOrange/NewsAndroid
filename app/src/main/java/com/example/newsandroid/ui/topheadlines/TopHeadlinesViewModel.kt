@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.example.newsandroid.database.getDatabase
+import com.example.newsandroid.database.DBProvider
 import com.example.newsandroid.enums.Country
 import com.example.newsandroid.repository.NewsRepository
 import com.example.newsandroid.util.createChipList
@@ -21,9 +21,9 @@ enum class NewsApiStatus { LOADING, ERROR, DONE }
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
-    private var filter = FilterHolder()
+    private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
-    private val newsRepository = NewsRepository(getDatabase(application))
+    private var filter = FilterHolder()
 
     private val _status = MutableLiveData<NewsApiStatus>()
 
