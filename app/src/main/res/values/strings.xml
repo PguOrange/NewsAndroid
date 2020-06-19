@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NewsAndroid</string>
+    <string name="title_top_headlines">Top Headlines</string>
+    <string name="title_everything">Everything</string>
 </resources>
