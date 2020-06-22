@@ -83,6 +83,7 @@ class TopHeadlinesFragment : Fragment() {
                     val chip = inflator.inflate(R.layout.category, chipGroup, false) as Chip
                     chip.text = categoryName
                     chip.tag = categoryName
+                    if (categoryName == topHeadlinesViewModel.textCategory) topHeadlinesViewModel.onFilterChanged(chip.tag as String, false)
                     chip.setOnCheckedChangeListener { button, isChecked ->
                         topHeadlinesViewModel.onFilterChanged(button.tag as String, isChecked)
                     }
