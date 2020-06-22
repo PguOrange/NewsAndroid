@@ -33,10 +33,3 @@ fun convertDBArticleToAPIArticle(dbArticles: List<DatabaseNews>): List<NewsPrope
         )
     }
 }
-
-fun createChipList(): List<String>{
-    val list : List<String> = listOf(
-        Country.US.toString(),
-        Country.FR.toString())
-    return list
-}

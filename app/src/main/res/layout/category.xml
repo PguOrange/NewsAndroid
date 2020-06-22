@@ -8,4 +8,6 @@
     style="@style/Widget.MaterialComponents.Chip.Choice"
     app:chipBackgroundColor="@color/selected_highlight"
     app:checkedIconVisible="true"
+    app:checkedIcon="@drawable/ic_baseline_check_24"
+    android:textColor="@color/selected_color"
     tools:checked="true"/>

@@ -1,15 +1,15 @@
 package com.example.newsandroid.ui.topheadlines
 
 import android.app.Application
-import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.database.DBProvider
+import com.example.newsandroid.enums.Category
 import com.example.newsandroid.enums.Country
 import com.example.newsandroid.repository.NewsRepository
+import com.example.newsandroid.util.createChipCategoryList
 import com.example.newsandroid.util.createChipList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,9 +17,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
-enum class NewsApiStatus { LOADING, ERROR, DONE }
+enum class NewsApiStatus { LOADING, ERROR, ERRORWITHCACHE, ERRORWITHCACHEANDFILTERDISPLAYED, DONE }
+
+var currentCategory = Category.GENERAL.value
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
+
+    var currentCountry = Country.FR.value
+    var textCategory = currentCategory
 
     private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
@@ -27,16 +32,15 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     private val _status = MutableLiveData<NewsApiStatus>()
 
-    private val _countryList = MutableLiveData<List<String>>()
+    private val _categoryList = MutableLiveData<List<String>>()
 
-    val countryList: LiveData<List<String>>
-        get() = _countryList
-
+    val categoryList: LiveData<List<String>>
+        get() = _categoryList
+    
     val status: LiveData<NewsApiStatus>
         get() = _status
 
-    private val countries = createChipList()
-
+    private val categories = createChipCategoryList()
 
     val property = newsRepository.news
 
@@ -48,24 +52,55 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         getTopHeadlinesProperties()
     }
 
-    private fun getTopHeadlinesProperties() {
+    fun getTopHeadlinesProperties() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                newsRepository.refreshNews()
+                newsRepository.refreshNews(currentCountry, currentCategory)
                 Log.d("refreshNews", "News refreshed")
+                _categoryList.value = categories
                 _status.value = NewsApiStatus.DONE
-                _countryList.value = countries
             }catch (e: Exception){
                 if (property.value.isNullOrEmpty())
-                _status.value = NewsApiStatus.ERROR
+                    _status.value = NewsApiStatus.ERROR
+                else
+                    _status.value = NewsApiStatus.ERRORWITHCACHE
             }
         }
     }
 
     fun onFilterChanged(filter: String, isChecked: Boolean) {
         if (this.filter.update(filter, isChecked)) {
-            getTopHeadlinesProperties()
+            textCategory = currentCategory
+            refreshList()
+        }
+    }
+
+    fun changeCurrentCountry(){
+        currentCountry = if (currentCountry == Country.FR.value) Country.US.value else Country.FR.value
+    }
+
+    fun onCountryChanged(){
+        refreshList()
+    }
+
+    fun onListRefreshed(){
+        refreshList()
+    }
+
+     private fun refreshList(){
+        coroutineScope.launch {
+            try {
+                _status.value = NewsApiStatus.LOADING
+                newsRepository.refreshNews(currentCountry, currentCategory)
+                Log.d("refreshNews", "News refreshed")
+                _status.value = NewsApiStatus.DONE
+            }catch (e: Exception){
+                if (property.value.isNullOrEmpty())
+                    _status.value = NewsApiStatus.ERROR
+                else
+                    _status.value = NewsApiStatus.ERRORWITHCACHEANDFILTERDISPLAYED
+            }
         }
     }
 
@@ -75,15 +110,12 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
     }
 
     private class FilterHolder {
-        var currentValue: String? = null
-            private set
-
         fun update(changedFilter: String, isChecked: Boolean): Boolean {
             if (isChecked) {
-                currentValue = changedFilter
+                currentCategory = changedFilter
                 return true
-            } else if (currentValue == changedFilter) {
-                currentValue = null
+            } else if (currentCategory == changedFilter) {
+                currentCategory = Category.GENERAL.value
                 return true
             }
             return false
