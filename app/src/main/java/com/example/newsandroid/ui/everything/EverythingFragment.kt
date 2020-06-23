@@ -1,21 +1,25 @@
 package com.example.newsandroid.ui.everything
 
-import androidx.lifecycle.ViewModelProviders
+import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
-import com.example.newsandroid.ui.topheadlines.TopHeadlinesViewModel
 import kotlinx.android.synthetic.main.everything_fragment.*
-import kotlinx.android.synthetic.main.top_headlines_fragment.*
+import kotlinx.android.synthetic.main.layout_custom_dialog.*
+import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+
 
 class EverythingFragment : Fragment() {
 
@@ -75,6 +79,34 @@ class EverythingFragment : Fragment() {
             everythingViewModel.getEverythingProperties()
             swipe_refresh_layout_everything.isRefreshing = false
         }
+
+        filter_button_everything.setOnClickListener() {
+            //everythingViewModel.changeCurrentCountry()
+            showDialog()
+        }
+
+    }
+
+    private fun showDialog() {
+        val alert = AlertDialog.Builder(context)
+        val alertLayout: View = layoutInflater.inflate(R.layout.layout_custom_dialog, null)
+        alert.setTitle("Filtre de recherche")
+        alert.setView(alertLayout)
+        alert.setCancelable(false)
+        alert.setNegativeButton(
+            "Cancel"
+        ) { dialog, which ->
+        }
+
+        alert.setPositiveButton(
+            "OK"
+        ) { dialog, which ->
+            val language = alertLayout.sp_language.selectedItem.toString()
+            val sort = alertLayout.sp_sort.selectedItem.toString()
+
+        }
+        val dialog = alert.create()
+        dialog.show()
     }
 
 }
