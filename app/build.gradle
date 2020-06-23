@@ -3,8 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-def NEWS_API_KEY = NEWS_API_KEY ?: "Enter API-KEY in gradle.properties"
-
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -18,7 +16,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         each { type ->
-            type.buildConfigField 'String', "ApiKey", NEWS_API_KEY
+            type.buildConfigField 'String', "ApiKey", '"dc62650aa1db4ea398e6dda8f39c2612"'
             type.buildConfigField 'String', 'BaseURL', '"http://newsapi.org/v2/"'
         }
     }
