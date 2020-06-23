@@ -1,7 +1,6 @@
 package com.example.newsandroid.ui.topheadlines
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,18 +10,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
-import com.example.newsandroid.enums.Category
+import com.example.newsandroid.adapter.NewsAdapter
+import com.example.newsandroid.enums.NewsApiStatus
+import com.example.newsandroid.factory.ViewModelFactory
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
 
 class TopHeadlinesFragment : Fragment() {
 
-    lateinit var adapter: TopHeadlinesAdapter
+    lateinit var adapter: NewsAdapter
 
     private val topHeadlinesViewModel: TopHeadlinesViewModel by lazy {
         val application = requireNotNull(this.activity).application
-        val viewModelFactory = TopHeadlinesViewModelFactory(application)
+        val viewModelFactory =
+            ViewModelFactory(application)
         ViewModelProviders.of(
             this, viewModelFactory).get(TopHeadlinesViewModel::class.java)
     }
@@ -45,15 +47,13 @@ class TopHeadlinesFragment : Fragment() {
                     NewsApiStatus.ERROR -> {
                         status_image.visibility = View.VISIBLE
                         status_image.setImageResource(R.drawable.ic_connection_error)
-                        country_button.visibility = View.GONE
                         swipe_refresh_recycler.isEnabled = false
-                        text_category.visibility = View.GONE
+                        filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
                     NewsApiStatus.ERRORWITHCACHE -> {
-                        country_button.visibility = View.GONE
                         swipe_refresh_recycler.isEnabled = false
-                        text_category.visibility = View.GONE
+                        filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
                     NewsApiStatus.ERRORWITHCACHEANDFILTERDISPLAYED -> {
@@ -64,9 +64,8 @@ class TopHeadlinesFragment : Fragment() {
                         swipe_refresh_layout.isEnabled = false
                         swipe_refresh_layout.isRefreshing = false
                         swipe_refresh_recycler.isEnabled = true
-                        country_button.visibility = View.VISIBLE
+                        filter.visibility = View.VISIBLE
                         country_button.text = topHeadlinesViewModel.currentCountry
-                        text_category.visibility = View.VISIBLE
                         text_category.text = topHeadlinesViewModel.textCategory
                     }
                 }
@@ -99,7 +98,7 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.property.observe(viewLifecycleOwner, Observer {
             news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            adapter = TopHeadlinesAdapter(it)
+            adapter = NewsAdapter(it)
             news_list.adapter = adapter
         })
 

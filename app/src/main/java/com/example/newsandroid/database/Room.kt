@@ -16,3 +16,8 @@ interface NewsDao {
 abstract class NewsDatabase: RoomDatabase() {
     abstract val newsDao: NewsDao
 }
+
+@Database(entities = [DatabaseNews::class], version = 1)
+abstract class EverythingNewsDatabase: RoomDatabase() {
+    abstract val newsDao: NewsDao
+}

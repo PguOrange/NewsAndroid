@@ -8,7 +8,11 @@ import retrofit2.http.Query
 
 interface NewsApiService {
     @GET("top-headlines")
-    fun getProperties(@Query("country") country : String, @Query("category") category: String?, @Query("apiKey") apiKey : String = BuildConfig.ApiKey):
+    fun getTopHeadlines(@Query("country") country : String, @Query("category") category: String?, @Query("apiKey") apiKey : String = BuildConfig.ApiKey):
+            Deferred<NewsCollection>
+
+    @GET("everything")
+    fun getEverything(@Query("q") q : String, @Query("apiKey") apiKey : String = BuildConfig.ApiKey):
             Deferred<NewsCollection>
 
 }

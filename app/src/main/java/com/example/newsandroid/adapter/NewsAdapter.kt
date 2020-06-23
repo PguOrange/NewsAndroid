@@ -1,4 +1,4 @@
-package com.example.newsandroid.ui.topheadlines
+package com.example.newsandroid.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
 import com.example.newsandroid.domain.NewsProperty
 
-class TopHeadlinesAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<TopHeadlinesAdapter.ViewHolder>() {
+class NewsAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     override fun getItemCount() = items.size
 
@@ -20,7 +20,9 @@ class TopHeadlinesAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(
+            parent
+        )
     }
 
     class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -41,7 +43,9 @@ class TopHeadlinesAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val view = layoutInflater
                     .inflate(R.layout.list_item_news, parent, false)
-                return ViewHolder(view)
+                return ViewHolder(
+                    view
+                )
             }
         }
     }
