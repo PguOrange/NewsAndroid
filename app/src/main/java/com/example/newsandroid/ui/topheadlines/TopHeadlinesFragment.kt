@@ -57,7 +57,7 @@ class TopHeadlinesFragment : Fragment() {
                         status_image.visibility = View.GONE
                         filter.visibility = View.VISIBLE
                         country_button.text = topHeadlinesViewModel.currentCountry
-                        text_category.text = topHeadlinesViewModel.textCategory
+                        text_category.text = topHeadlinesViewModel.currentCategory
                     }
                 }
             }
@@ -73,7 +73,7 @@ class TopHeadlinesFragment : Fragment() {
                     val chip = inflator.inflate(R.layout.category, chipGroup, false) as Chip
                     chip.text = categoryName
                     chip.tag = categoryName
-                    if (categoryName == topHeadlinesViewModel.textCategory) topHeadlinesViewModel.onFilterChanged(chip.tag as String, false)
+                    if (categoryName == topHeadlinesViewModel.currentCategory) topHeadlinesViewModel.onFilterChanged(chip.tag as String, false)
                     chip.setOnCheckedChangeListener { button, isChecked ->
                         topHeadlinesViewModel.onFilterChanged(button.tag as String, isChecked)
                     }
@@ -99,12 +99,6 @@ class TopHeadlinesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /*
-            swipe_refresh_layout.setOnRefreshListener {
-                topHeadlinesViewModel.getTopHeadlinesProperties()
-                swipe_refresh_layout.isRefreshing = false
-            }
-        */
 
         country_button.setOnClickListener() {
             topHeadlinesViewModel.changeCurrentCountry()

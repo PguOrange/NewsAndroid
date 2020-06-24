@@ -19,12 +19,11 @@ import kotlinx.coroutines.launch
 
 enum class NewsApiStatus { LOADING, ERROR, ERROR_WITH_CACHE, DONE }
 
-var currentCategory = Category.GENERAL.value
-
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
+
     var currentCountry = Country.FR.value
-    var textCategory = currentCategory
+    var currentCategory = Category.GENERAL.value
 
     private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
@@ -59,7 +58,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     fun onFilterChanged(filter: String, isChecked: Boolean) {
         if (this.filter.update(filter, isChecked)) {
-            textCategory = currentCategory
+            currentCategory = this.filter.currentValue.toString()//currentCategory
             refreshList()
         }
     }
@@ -88,21 +87,26 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-    }
-
     private class FilterHolder {
+        var currentValue: String? = null
+            private set
+
         fun update(changedFilter: String, isChecked: Boolean): Boolean {
             if (isChecked) {
-                currentCategory = changedFilter
+                currentValue = changedFilter
                 return true
-            } else if (currentCategory == changedFilter) {
-                currentCategory = Category.GENERAL.value
+            } else if (currentValue == changedFilter) {
+                currentValue = Category.GENERAL.value
                 return true
             }
             return false
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+    }
 }
+
+
