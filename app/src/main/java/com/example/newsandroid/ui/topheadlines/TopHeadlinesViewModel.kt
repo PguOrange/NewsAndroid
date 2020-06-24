@@ -35,7 +35,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     val categoryList: LiveData<List<String>>
         get() = _categoryList
-    
+
     val status: LiveData<NewsApiStatus>
         get() = _status
 
@@ -45,7 +45,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     private var viewModelJob = Job()
 
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main )
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     init {
         getTopHeadlinesProperties()
@@ -63,22 +63,23 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         }
     }
 
-    fun changeCurrentCountry(){
-        currentCountry = if (currentCountry == Country.FR.value) Country.US.value else Country.FR.value
+    fun changeCurrentCountry() {
+        currentCountry =
+            if (currentCountry == Country.FR.value) Country.US.value else Country.FR.value
     }
 
-    fun onCountryChanged(){
+    fun onCountryChanged() {
         refreshList()
     }
 
-     private fun refreshList(){
+    private fun refreshList() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
                 newsRepository.refreshNews(currentCountry, currentCategory)
                 Log.d("refreshNews", "News refreshed")
                 _status.value = NewsApiStatus.DONE
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 if (property.value.isNullOrEmpty())
                     _status.value = NewsApiStatus.ERROR
                 else
@@ -92,14 +93,18 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
             private set
 
         fun update(changedFilter: String, isChecked: Boolean): Boolean {
-            if (isChecked) {
-                currentValue = changedFilter
-                return true
-            } else if (currentValue == changedFilter) {
-                currentValue = Category.GENERAL.value
-                return true
+            when {
+                isChecked -> {
+                    currentValue = changedFilter
+                    return true
+                }
+                currentValue == changedFilter -> {
+                    currentValue = Category.GENERAL.value
+                    return true
+                }
+                else ->
+                    return false
             }
-            return false
         }
     }
 
