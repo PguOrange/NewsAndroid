@@ -17,7 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
-enum class NewsApiStatus { LOADING, ERROR, ERRORWITHCACHE, ERRORWITHCACHEANDFILTERDISPLAYED, DONE }
+enum class NewsApiStatus { LOADING, ERROR, ERROR_WITH_CACHE, DONE }
 
 var currentCategory = Category.GENERAL.value
 
@@ -50,23 +50,11 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     init {
         getTopHeadlinesProperties()
+        _categoryList.value = categories
     }
 
     fun getTopHeadlinesProperties() {
-        coroutineScope.launch {
-            try {
-                _status.value = NewsApiStatus.LOADING
-                newsRepository.refreshNews(currentCountry, currentCategory)
-                Log.d("refreshNews", "News refreshed")
-                _categoryList.value = categories
-                _status.value = NewsApiStatus.DONE
-            }catch (e: Exception){
-                if (property.value.isNullOrEmpty())
-                    _status.value = NewsApiStatus.ERROR
-                else
-                    _status.value = NewsApiStatus.ERRORWITHCACHE
-            }
-        }
+        refreshList()
     }
 
     fun onFilterChanged(filter: String, isChecked: Boolean) {
@@ -84,10 +72,6 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         refreshList()
     }
 
-    fun onListRefreshed(){
-        refreshList()
-    }
-
      private fun refreshList(){
         coroutineScope.launch {
             try {
@@ -99,7 +83,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
                 if (property.value.isNullOrEmpty())
                     _status.value = NewsApiStatus.ERROR
                 else
-                    _status.value = NewsApiStatus.ERRORWITHCACHEANDFILTERDISPLAYED
+                    _status.value = NewsApiStatus.ERROR_WITH_CACHE
             }
         }
     }

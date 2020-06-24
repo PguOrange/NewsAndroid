@@ -45,28 +45,18 @@ class TopHeadlinesFragment : Fragment() {
                     NewsApiStatus.ERROR -> {
                         status_image.visibility = View.VISIBLE
                         status_image.setImageResource(R.drawable.ic_connection_error)
-                        country_button.visibility = View.GONE
-                        swipe_refresh_recycler.isEnabled = false
-                        text_category.visibility = View.GONE
+                        filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
-                    NewsApiStatus.ERRORWITHCACHE -> {
-                        country_button.visibility = View.GONE
-                        swipe_refresh_recycler.isEnabled = false
-                        text_category.visibility = View.GONE
-                        Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
-                    }
-                    NewsApiStatus.ERRORWITHCACHEANDFILTERDISPLAYED -> {
+                    NewsApiStatus.ERROR_WITH_CACHE -> {
+                        status_image.visibility = View.GONE
+                        filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
                     NewsApiStatus.DONE -> {
                         status_image.visibility = View.GONE
-                        swipe_refresh_layout.isEnabled = false
-                        swipe_refresh_layout.isRefreshing = false
-                        swipe_refresh_recycler.isEnabled = true
-                        country_button.visibility = View.VISIBLE
+                        filter.visibility = View.VISIBLE
                         country_button.text = topHeadlinesViewModel.currentCountry
-                        text_category.visibility = View.VISIBLE
                         text_category.text = topHeadlinesViewModel.textCategory
                     }
                 }
@@ -109,11 +99,12 @@ class TopHeadlinesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        swipe_refresh_layout.setOnRefreshListener {
-            topHeadlinesViewModel.getTopHeadlinesProperties()
-            swipe_refresh_layout.isRefreshing = false
-        }
+        /*
+            swipe_refresh_layout.setOnRefreshListener {
+                topHeadlinesViewModel.getTopHeadlinesProperties()
+                swipe_refresh_layout.isRefreshing = false
+            }
+        */
 
         country_button.setOnClickListener() {
             topHeadlinesViewModel.changeCurrentCountry()
@@ -122,7 +113,8 @@ class TopHeadlinesFragment : Fragment() {
         }
 
         swipe_refresh_recycler.setOnRefreshListener {
-            topHeadlinesViewModel.onListRefreshed()
+            //topHeadlinesViewModel.onListRefreshed()
+            topHeadlinesViewModel.getTopHeadlinesProperties()
             swipe_refresh_recycler.isRefreshing = false
         }
     }
