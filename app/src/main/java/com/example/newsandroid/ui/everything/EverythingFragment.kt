@@ -16,6 +16,7 @@ import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
+import com.example.newsandroid.util.transformSpinnerStringToParametersApi
 import kotlinx.android.synthetic.main.everything_fragment.*
 import kotlinx.android.synthetic.main.layout_custom_dialog.*
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
@@ -76,12 +77,11 @@ class EverythingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipe_refresh_layout_everything.setOnRefreshListener {
-            everythingViewModel.getEverythingProperties()
+            everythingViewModel.getEverythingProperties(everythingViewModel.currentLanguage,everythingViewModel.currentSort)
             swipe_refresh_layout_everything.isRefreshing = false
         }
 
         filter_button_everything.setOnClickListener() {
-            //everythingViewModel.changeCurrentCountry()
             showDialog()
         }
 
@@ -103,7 +103,7 @@ class EverythingFragment : Fragment() {
         ) { dialog, which ->
             val language = alertLayout.sp_language.selectedItem.toString()
             val sort = alertLayout.sp_sort.selectedItem.toString()
-
+            everythingViewModel.getEverythingProperties(language, transformSpinnerStringToParametersApi(sort))
         }
         val dialog = alert.create()
         dialog.show()

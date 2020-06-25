@@ -12,7 +12,7 @@ interface NewsApiService {
             Deferred<NewsCollection>
 
     @GET("everything")
-    fun getEverything(@Query("q") q : String, @Query("apiKey") apiKey : String = BuildConfig.ApiKey):
+    fun getEverything(@Query("q") q : String, @Query("language") language : String?, @Query("sortBy") sortBy : String, @Query("apiKey") apiKey : String = BuildConfig.ApiKey):
             Deferred<NewsCollection>
 
 }

@@ -29,15 +29,19 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main )
 
+    val currentLanguage = "ALL"
+    val currentSort = "publishedAt"
+
     init {
-        getEverythingProperties()
+        getEverythingProperties(currentLanguage, currentSort)
     }
 
-    fun getEverythingProperties() {
+    fun getEverythingProperties(language: String, sort: String) {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                newsRepository.refreshNewsEverything()
+                if(language=="ALL") newsRepository.refreshNewsEverything(language = null, sort = sort)
+                else newsRepository.refreshNewsEverything(language, sort)
                 Log.d("refreshNews", "Everything News refreshed")
                 _status.value = NewsApiStatus.DONE
             }catch (e: Exception){

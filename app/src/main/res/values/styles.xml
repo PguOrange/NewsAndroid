@@ -6,16 +6,4 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
-    <string-array name="language">
-        <item>ALL</item>
-        <item>FR</item>
-        <item>US</item>
-    </string-array>
-    <string-array name="sort">
-        <item>Dernières News</item>
-        <item>Pertinence</item>
-        <item>Populaire</item>
-    </string-array>
-
 </resources>

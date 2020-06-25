@@ -2,4 +2,15 @@
     <string name="app_name">NewsAndroid</string>
     <string name="title_top_headlines">Top Headlines</string>
     <string name="title_everything">Everything</string>
+
+    <string-array name="language">
+        <item>ALL</item>
+        <item>FR</item>
+        <item>US</item>
+    </string-array>
+    <string-array name="sort">
+        <item>Dernières News</item>
+        <item>Pertinence</item>
+        <item>Populaire</item>
+    </string-array>
 </resources>

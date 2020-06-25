@@ -38,10 +38,10 @@ class NewsRepository(private val database: NewsDatabase, private val databaseEve
         }
     }
 
-    suspend fun refreshNewsEverything() {
+    suspend fun refreshNewsEverything(language: String?, sort: String) {
         withContext(Dispatchers.IO) {
             try {
-                val newsCollection = newsApiService?.getEverything("bitcoin")?.await()
+                val newsCollection = newsApiService?.getEverything("bitcoin", language, sort)?.await()
                 if (newsCollection != null) {
                     databaseEverything.newsDao.insertAll(convertAPIArticleToDBArticle(newsCollection.articles))
                 }else{
