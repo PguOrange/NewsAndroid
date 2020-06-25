@@ -48,10 +48,21 @@ class TopHeadlinesFragment : Fragment() {
                         filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
+                    NewsApiStatus.ERROR_API -> {
+                        status_image.visibility = View.VISIBLE
+                        status_image.setImageResource(R.drawable.ic_connection_error)
+                        filter.visibility = View.GONE
+                        Toast.makeText(activity, "Error to get news", Toast.LENGTH_LONG).show()
+                    }
                     NewsApiStatus.ERROR_WITH_CACHE -> {
                         status_image.visibility = View.GONE
                         filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
+                    }
+                    NewsApiStatus.ERROR_API_WITH_CACHE -> {
+                        status_image.visibility = View.GONE
+                        filter.visibility = View.GONE
+                        Toast.makeText(activity, "Error to get news", Toast.LENGTH_LONG).show()
                     }
                     NewsApiStatus.DONE -> {
                         status_image.visibility = View.GONE

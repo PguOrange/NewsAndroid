@@ -23,21 +23,25 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
         convertDBArticleToAPIArticle(it)
     }
 
-    suspend fun refreshNews(country: String, category : String?) {
+    suspend fun refreshNews(country: String, category : String?) : Int {
+        var size = 0
         withContext(Dispatchers.IO) {
             try {
                 val newsCollection = newsApiService?.getProperties(country, category)?.await()
-                if (newsCollection != null) {
+                Log.d("refreshNews", newsCollection?.totalResults.toString())
+                if (newsCollection != null && newsCollection.totalResults > 0) {
                     database.newsDao.insertAll(convertAPIArticleToDBArticle(newsCollection.articles))
+                    Log.d("refreshNews", "newsCollection is not null")
+                    size = newsCollection.totalResults
                 }else{
                     Log.d("refreshNews", "newsCollection is null")
                 }
             }catch (NewsApiGetException : Exception){
                 Log.d("refreshNews", NewsApiGetException.message)
                 throw NewsApiGetException
-
             }
         }
+        return size
     }
 
 }

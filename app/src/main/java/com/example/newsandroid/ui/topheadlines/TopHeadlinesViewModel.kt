@@ -17,10 +17,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
-enum class NewsApiStatus { LOADING, ERROR, ERROR_WITH_CACHE, DONE }
+enum class NewsApiStatus { LOADING, ERROR, ERROR_WITH_CACHE, ERROR_API, ERROR_API_WITH_CACHE, DONE }
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
+    val errorApiMessage = "HTTP 400 Bad Request"
 
     var currentCountry = Country.FR.value
     var currentCategory = Category.GENERAL.value
@@ -76,14 +77,28 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                newsRepository.refreshNews(currentCountry, currentCategory)
-                Log.d("refreshNews", "News refreshed")
-                _status.value = NewsApiStatus.DONE
+                if(newsRepository.refreshNews(currentCountry, currentCategory) !=0){
+                    Log.d("refreshNews", "News refreshed")
+                    _status.value = NewsApiStatus.DONE
+                }
+                else{
+                    Log.d("refreshNews", "News is empty")
+                    if (property.value.isNullOrEmpty())
+                        _status.value = NewsApiStatus.ERROR_API
+                    else
+                        _status.value = NewsApiStatus.ERROR_API_WITH_CACHE
+                }
             } catch (e: Exception) {
                 if (property.value.isNullOrEmpty())
-                    _status.value = NewsApiStatus.ERROR
+                    if(e.message == errorApiMessage)
+                        _status.value = NewsApiStatus.ERROR_API
+                    else
+                        _status.value = NewsApiStatus.ERROR
                 else
-                    _status.value = NewsApiStatus.ERROR_WITH_CACHE
+                    if(e.message == errorApiMessage)
+                        _status.value = NewsApiStatus.ERROR_API_WITH_CACHE
+                    else
+                        _status.value = NewsApiStatus.ERROR_WITH_CACHE
             }
         }
     }
