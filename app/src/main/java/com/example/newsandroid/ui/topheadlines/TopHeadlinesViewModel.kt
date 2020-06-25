@@ -1,6 +1,7 @@
 package com.example.newsandroid.ui.topheadlines
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +11,6 @@ import com.example.newsandroid.enums.Category
 import com.example.newsandroid.enums.Country
 import com.example.newsandroid.repository.NewsRepository
 import com.example.newsandroid.util.createChipCategoryList
-import com.example.newsandroid.util.createChipList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,8 +23,10 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     val errorApiMessage = "HTTP 400 Bad Request"
 
-    var currentCountry = Country.FR.value
-    var currentCategory = Category.GENERAL.value
+    val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
+
+    var currentCountry = sharedPreferences.getString("Country", Country.FR.value)
+    var currentCategory = sharedPreferences.getString("Category", Category.GENERAL.value)
 
     private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
@@ -49,8 +51,10 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     init {
-        getTopHeadlinesProperties()
         _categoryList.value = categories
+
+        Log.d("CurrentCategory 2", sharedPreferences.getString("Category", "FR"))
+        getTopHeadlinesProperties()
     }
 
     fun getTopHeadlinesProperties() {
@@ -59,15 +63,22 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     fun onFilterChanged(filter: String, isChecked: Boolean) {
         if (this.filter.update(filter, isChecked)) {
+
             currentCategory = this.filter.currentValue.toString()//currentCategory
+            sharedPreferences.edit().putString("Category",this.filter.currentValue.toString()).commit()
+            Log.d("CurrentCategory 2", sharedPreferences.getString("Category", "FR"))
             refreshList()
         }
     }
 
+
     fun changeCurrentCountry() {
         currentCountry =
             if (currentCountry == Country.FR.value) Country.US.value else Country.FR.value
+        sharedPreferences.edit().putString("Country", currentCountry).commit()
     }
+
+
 
     fun onCountryChanged() {
         refreshList()
@@ -77,7 +88,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                if(newsRepository.refreshNews(currentCountry, currentCategory) !=0){
+                if(newsRepository.refreshNews(currentCountry!!, currentCategory) !=0){
                     Log.d("refreshNews", "News refreshed")
                     _status.value = NewsApiStatus.DONE
                 }
@@ -102,6 +113,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
             }
         }
     }
+
 
     private class FilterHolder {
         var currentValue: String? = null

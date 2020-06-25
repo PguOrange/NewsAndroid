@@ -28,6 +28,7 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
         withContext(Dispatchers.IO) {
             try {
                 val newsCollection = newsApiService?.getProperties(country, category)?.await()
+                Log.d("CurrentCountry", country)
                 Log.d("refreshNews", newsCollection?.totalResults.toString())
                 if (newsCollection != null && newsCollection.totalResults > 0) {
                     database.newsDao.insertAll(convertAPIArticleToDBArticle(newsCollection.articles))

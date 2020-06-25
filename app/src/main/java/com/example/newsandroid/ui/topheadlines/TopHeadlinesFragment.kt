@@ -1,5 +1,6 @@
 package com.example.newsandroid.ui.topheadlines
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
-import com.example.newsandroid.enums.Category
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
@@ -80,20 +80,16 @@ class TopHeadlinesFragment : Fragment() {
                 data ?: return
                 val chipGroup = category_list
                 val inflator = LayoutInflater.from(chipGroup.context)
-                val children = data.map { categoryName ->
+                data.map { categoryName ->
                     val chip = inflator.inflate(R.layout.category, chipGroup, false) as Chip
                     chip.text = categoryName
                     chip.tag = categoryName
-                    if (categoryName == topHeadlinesViewModel.currentCategory) topHeadlinesViewModel.onFilterChanged(chip.tag as String, false)
+                    chipGroup.addView(chip)
+                    if (categoryName == topHeadlinesViewModel.currentCategory) chip.isChecked = true
                     chip.setOnCheckedChangeListener { button, isChecked ->
                         topHeadlinesViewModel.onFilterChanged(button.tag as String, isChecked)
                     }
-                    chip
-                }
-                chipGroup.removeAllViews()
 
-                for (chip in children) {
-                    chipGroup.addView(chip)
                 }
             }
         })
@@ -103,7 +99,6 @@ class TopHeadlinesFragment : Fragment() {
             adapter = TopHeadlinesAdapter(it)
             news_list.adapter = adapter
         })
-
 
         return root
     }
