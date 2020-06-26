@@ -18,8 +18,7 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters) :
 
     override suspend fun doWork(): Result {
         val database = DBProvider.getDatabase(applicationContext)
-        val databaseEvery = DBProvider.getDatabaseEverything(applicationContext)
-        val repository = NewsRepository(database, databaseEvery)
+        val repository = NewsRepository(database)
         try {
             repository.refreshNewsTopHeadlines(Country.FR.toString(), null)
         } catch (e: HttpException) {

@@ -44,7 +44,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
     var currentCategory = sharedPreferences.getString("Category", Category.GENERAL.value)
     var currentPositionCountry = sharedPreferences.getInt("CountryPosition", Country.FR.position)
 
-    private val newsRepository = NewsRepository(DBProvider.getDatabase(application), DBProvider.getDatabaseEverything(application))
+    private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
     private var filter = FilterHolder()
 
