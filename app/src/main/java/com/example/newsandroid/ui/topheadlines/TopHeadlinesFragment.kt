@@ -43,33 +43,33 @@ class TopHeadlinesFragment : Fragment() {
         topHeadlinesViewModel.status.observe(viewLifecycleOwner, Observer {
             it.let {
                 when (it) {
-                    com.example.newsandroid.ui.topheadlines.NewsApiStatus.LOADING -> {
+                    NewsApiStatus.LOADING -> {
                         status_image.visibility = View.VISIBLE
                         status_image.setImageResource(R.drawable.loading_animation)
                     }
-                    com.example.newsandroid.ui.topheadlines.NewsApiStatus.ERROR -> {
+                    NewsApiStatus.ERROR -> {
                         status_image.visibility = View.VISIBLE
                         status_image.setImageResource(R.drawable.ic_connection_error)
                         filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
-                    com.example.newsandroid.ui.topheadlines.NewsApiStatus.ERROR_API -> {
+                    NewsApiStatus.ERROR_API -> {
                         status_image.visibility = View.VISIBLE
                         status_image.setImageResource(R.drawable.ic_connection_error)
                         filter.visibility = View.GONE
                         Toast.makeText(activity, "Error to get news", Toast.LENGTH_LONG).show()
                     }
-                    com.example.newsandroid.ui.topheadlines.NewsApiStatus.ERROR_WITH_CACHE -> {
+                    NewsApiStatus.ERROR_WITH_CACHE -> {
                         status_image.visibility = View.GONE
                         filter.visibility = View.GONE
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
-                    com.example.newsandroid.ui.topheadlines.NewsApiStatus.ERROR_API_WITH_CACHE -> {
+                    NewsApiStatus.ERROR_API_WITH_CACHE -> {
                         status_image.visibility = View.GONE
                         filter.visibility = View.GONE
                         Toast.makeText(activity, "Error to get news", Toast.LENGTH_LONG).show()
                     }
-                    com.example.newsandroid.ui.topheadlines.NewsApiStatus.DONE -> {
+                    NewsApiStatus.DONE -> {
                         status_image.visibility = View.GONE
                         filter.visibility = View.VISIBLE
                         text_category.text = topHeadlinesViewModel.currentCategory

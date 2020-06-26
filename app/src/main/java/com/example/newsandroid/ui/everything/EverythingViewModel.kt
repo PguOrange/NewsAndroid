@@ -44,7 +44,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
                 if (property.value.isNullOrEmpty())
                     _status.value = NewsApiStatus.ERROR
                 else
-                    _status.value = NewsApiStatus.ERRORWITHCACHE
+                    _status.value = NewsApiStatus.ERROR_WITH_CACHE
             }
         }
     }

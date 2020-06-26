@@ -10,7 +10,6 @@ import com.example.newsandroid.domain.NewsProperty
 import com.example.newsandroid.enums.Country
 import com.example.newsandroid.network.NewsApiService
 import com.example.newsandroid.network.ApiProvider
-import com.example.newsandroid.ui.topheadlines.NewsApiStatus
 import com.example.newsandroid.util.convertAPIArticleToDBArticle
 import com.example.newsandroid.util.convertDBArticleToAPIArticle
 import kotlinx.coroutines.*
@@ -28,7 +27,7 @@ class NewsRepository(private val database: NewsDatabase, private val databaseEve
         convertDBArticleToAPIArticle(it)
     }
 
-    suspend fun refreshNewsTopHeadlines(country: String, category : String?) {
+    suspend fun refreshNewsTopHeadlines(country: String, category : String?): Int {
         var size = 0
         withContext(Dispatchers.IO) {
             try {

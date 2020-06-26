@@ -20,7 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
-enum class NewsApiStatus { LOADING, ERROR, ERROR_WITH_CACHE, ERROR_API, ERROR_API_WITH_CACHE, DONE }
+
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 

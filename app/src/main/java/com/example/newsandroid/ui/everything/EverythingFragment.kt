@@ -47,11 +47,16 @@ class EverythingFragment : Fragment() {
                         status_image_everything.setImageResource(R.drawable.ic_connection_error)
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
-                    NewsApiStatus.ERRORWITHCACHE -> {
+                    NewsApiStatus.ERROR_API -> {
+                        status_image_everything.visibility = View.VISIBLE
+                        status_image_everything.setImageResource(R.drawable.ic_connection_error)
+                        Toast.makeText(activity, "Error to get news", Toast.LENGTH_LONG).show()
+                    }
+                    NewsApiStatus.ERROR_WITH_CACHE  -> {
                         Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
                     }
-                    NewsApiStatus.ERRORWITHCACHEANDFILTERDISPLAYED -> {
-                        Toast.makeText(activity, "No Internet Connection", Toast.LENGTH_LONG).show()
+                    NewsApiStatus.ERROR_API_WITH_CACHE -> {
+                        Toast.makeText(activity, "Error to get news", Toast.LENGTH_LONG).show()
                     }
                     NewsApiStatus.DONE -> {
                         status_image_everything.visibility = View.GONE
