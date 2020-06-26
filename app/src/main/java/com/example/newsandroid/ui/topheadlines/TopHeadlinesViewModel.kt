@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.newsandroid.R
+import com.example.newsandroid.adapter.CustomAdapterSpinner
 import com.example.newsandroid.database.DBProvider
 import com.example.newsandroid.enums.Category
 import com.example.newsandroid.enums.Country
@@ -21,12 +23,25 @@ enum class NewsApiStatus { LOADING, ERROR, ERROR_WITH_CACHE, ERROR_API, ERROR_AP
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
+    val imageSpinner = arrayOf(
+        R.drawable.fr,
+        R.drawable.us
+    )
+
+    val imageNameSpinner = arrayOf(
+        "FR", "US"
+    )
+
+    val spinnerCustomAdapter = CustomAdapterSpinner(application, imageSpinner, imageNameSpinner);
+
+
     val errorApiMessage = "HTTP 400 Bad Request"
 
     val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
 
     var currentCountry = sharedPreferences.getString("Country", Country.FR.value)
     var currentCategory = sharedPreferences.getString("Category", Category.GENERAL.value)
+    var currentPositionCountry = sharedPreferences.getInt("CountryPosition", Country.FR.position)
 
     private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
@@ -52,8 +67,6 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     init {
         _categoryList.value = categories
-
-        Log.d("CurrentCategory 2", sharedPreferences.getString("Category", "FR"))
         getTopHeadlinesProperties()
     }
 
@@ -66,16 +79,22 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
             currentCategory = this.filter.currentValue.toString()//currentCategory
             sharedPreferences.edit().putString("Category",this.filter.currentValue.toString()).commit()
-            Log.d("CurrentCategory 2", sharedPreferences.getString("Category", "FR"))
             refreshList()
         }
     }
 
 
     fun changeCurrentCountry() {
-        currentCountry =
-            if (currentCountry == Country.FR.value) Country.US.value else Country.FR.value
+        if (currentCountry == Country.FR.value){
+            currentCountry = Country.US.value
+            currentPositionCountry = Country.US.position
+        }
+        else {
+            currentCountry = Country.FR.value
+            currentPositionCountry = Country.FR.position
+        }
         sharedPreferences.edit().putString("Country", currentCountry).commit()
+        sharedPreferences.edit().putInt("CountryPosition", currentPositionCountry).commit()
     }
 
 
@@ -89,11 +108,9 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
             try {
                 _status.value = NewsApiStatus.LOADING
                 if(newsRepository.refreshNews(currentCountry!!, currentCategory) !=0){
-                    Log.d("refreshNews", "News refreshed")
                     _status.value = NewsApiStatus.DONE
                 }
                 else{
-                    Log.d("refreshNews", "News is empty")
                     if (property.value.isNullOrEmpty())
                         _status.value = NewsApiStatus.ERROR_API
                     else

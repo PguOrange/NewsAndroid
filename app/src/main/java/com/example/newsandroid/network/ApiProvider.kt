@@ -21,7 +21,6 @@ class ApiProvider {
             retrofit ?: synchronized(this) {
                 retrofit = buildRetrofit()
             }
-            Log.d("refreshNews", "APIProvider")
             return retrofit?.create(NewsApiService::class.java)
         }
 

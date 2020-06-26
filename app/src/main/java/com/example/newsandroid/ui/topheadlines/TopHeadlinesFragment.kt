@@ -1,17 +1,18 @@
 package com.example.newsandroid.ui.topheadlines
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
+import com.example.newsandroid.adapter.CustomAdapterSpinner
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
@@ -67,7 +68,6 @@ class TopHeadlinesFragment : Fragment() {
                     NewsApiStatus.DONE -> {
                         status_image.visibility = View.GONE
                         filter.visibility = View.VISIBLE
-                        country_button.text = topHeadlinesViewModel.currentCountry
                         text_category.text = topHeadlinesViewModel.currentCategory
                     }
                 }
@@ -106,14 +106,33 @@ class TopHeadlinesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        country_button.setOnClickListener() {
-            topHeadlinesViewModel.changeCurrentCountry()
-            topHeadlinesViewModel.onCountryChanged()
-            country_button.text = topHeadlinesViewModel.currentCountry
+        country_spinner.adapter = topHeadlinesViewModel.spinnerCustomAdapter
+
+        var check = 0
+
+        country_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if(++check>1) {
+                    topHeadlinesViewModel.changeCurrentCountry()
+                    topHeadlinesViewModel.onCountryChanged()
+                } else {
+                    if (country_spinner.selectedItemPosition != topHeadlinesViewModel.currentPositionCountry){
+                        country_spinner.setSelection(topHeadlinesViewModel.currentPositionCountry)
+                        --check
+                    }
+                }
+            }
+
         }
 
+
+
+
         swipe_refresh_recycler.setOnRefreshListener {
-            //topHeadlinesViewModel.onListRefreshed()
             topHeadlinesViewModel.getTopHeadlinesProperties()
             swipe_refresh_recycler.isRefreshing = false
         }
