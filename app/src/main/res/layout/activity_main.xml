@@ -25,5 +25,4 @@
         app:defaultNavHost="true"
         android:layout_marginBottom="?attr/actionBarSize"
         app:navGraph="@navigation/navigation" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

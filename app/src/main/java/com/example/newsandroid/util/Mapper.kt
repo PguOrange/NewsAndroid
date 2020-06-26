@@ -1,7 +1,10 @@
 package com.example.newsandroid.util
 
+import com.example.newsandroid.R
 import com.example.newsandroid.database.DatabaseNews
 import com.example.newsandroid.domain.NewsProperty
+import com.example.newsandroid.enums.Country
+import com.google.android.material.chip.Chip
 
 fun convertAPIArticleToDBArticle(apiArticles: List<NewsProperty>): List<DatabaseNews> {
     return apiArticles.map {

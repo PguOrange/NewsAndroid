@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.newsandroid.database.DBProvider
+import com.example.newsandroid.enums.Country
 import com.example.newsandroid.repository.NewsRepository
 import retrofit2.HttpException
 
@@ -19,7 +20,7 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters) :
         val database = DBProvider.getDatabase(applicationContext)
         val repository = NewsRepository(database)
         try {
-            repository.refreshNews()
+            repository.refreshNews(Country.FR.toString(), null)
         } catch (e: HttpException) {
             return Result.failure()
         }
