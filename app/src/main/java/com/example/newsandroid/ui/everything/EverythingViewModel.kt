@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class EverythingViewModel(application: Application) : ViewModel() {
 
-    private val newsRepository = NewsRepository(DBProvider.getDatabase(application), DBProvider.getDatabaseEverything(application))
+    private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
     private val _status = MutableLiveData<NewsApiStatus>()
 
