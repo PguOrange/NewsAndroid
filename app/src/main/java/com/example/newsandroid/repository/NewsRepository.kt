@@ -14,11 +14,11 @@ import com.example.newsandroid.util.convertDBArticleToAPIArticleTH
 import kotlinx.coroutines.*
 
 class NewsRepository(private val database: NewsDatabase, private val newsApiService: NewsApiService? = ApiProvider.getInstance()) {
-    val news: LiveData<List<NewsProperty>> = Transformations.map(database.newsTopHeadlinesDao.getNews()) {
+    val news: LiveData<List<NewsProperty>> = Transformations.map(database.newsDao.getNewsTopHeadlines()) {
         convertDBArticleToAPIArticleTH(it)
     }
 
-    val newsEverything: LiveData<List<NewsProperty>> = Transformations.map(database.newsEverythingDao.getNews()) {
+    val newsEverything: LiveData<List<NewsProperty>> = Transformations.map(database.newsDao.getNewsEverything()) {
         convertDBArticleToAPIArticleET(it)
     }
 
@@ -28,7 +28,7 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
             try {
                 val newsCollection = newsApiService?.getTopHeadlines(country, category)?.await()
                 if (newsCollection != null && newsCollection.totalResults > 0) {
-                    database.newsTopHeadlinesDao.insertAll(convertAPIArticleToDBArticleTH(newsCollection.articles))
+                    database.newsDao.insertAllTopHeadlines(convertAPIArticleToDBArticleTH(newsCollection.articles))
                     size = newsCollection.totalResults
                 }else{
                     Log.d("refreshNews", "newsCollection is null")
@@ -47,8 +47,8 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
             try {
                 val newsCollection = newsApiService?.getEverything(query, language, sort, dateFrom, dateTo)?.await()
                 if (newsCollection != null) {
-                    database.newsEverythingDao.deleteAll()
-                    database.newsEverythingDao.insertAll(convertAPIArticleToDBArticleET(newsCollection.articles))
+                    database.newsDao.deleteAllEverything()
+                    database.newsDao.insertAllEverything(convertAPIArticleToDBArticleET(newsCollection.articles))
                     size = newsCollection.totalResults
                 }else{
                     Log.d("refreshNews", "newsCollection is null")
