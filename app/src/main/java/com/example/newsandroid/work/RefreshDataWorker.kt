@@ -20,7 +20,7 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters) :
         val database = DBProvider.getDatabase(applicationContext)
         val repository = NewsRepository(database)
         try {
-            repository.refreshNews(Country.FR.toString(), null)
+            repository.refreshNewsTopHeadlines(Country.FR.toString(), null)
         } catch (e: HttpException) {
             return Result.failure()
         }

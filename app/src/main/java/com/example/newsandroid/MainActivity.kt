@@ -24,9 +24,11 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.topHeadlinesFragment -> {
                     findNavController(R.id.nav_host_fragment).navigate(R.id.topHeadlinesFragment)
+                    return@OnNavigationItemSelectedListener true
                 }
                 R.id.everythingFragment -> {
                     findNavController(R.id.nav_host_fragment).navigate(R.id.everythingFragment)
+                    return@OnNavigationItemSelectedListener true
                 }
             }
             false

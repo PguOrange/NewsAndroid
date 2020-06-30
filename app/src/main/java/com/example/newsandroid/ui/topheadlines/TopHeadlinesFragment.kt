@@ -14,16 +14,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.CustomAdapterSpinner
 import com.google.android.material.chip.Chip
+import com.example.newsandroid.adapter.NewsAdapter
+import com.example.newsandroid.enums.NewsApiStatus
+import com.example.newsandroid.factory.ViewModelFactory
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
 
 class TopHeadlinesFragment : Fragment() {
 
-    lateinit var adapter: TopHeadlinesAdapter
+    lateinit var adapter: NewsAdapter
 
     private val topHeadlinesViewModel: TopHeadlinesViewModel by lazy {
         val application = requireNotNull(this.activity).application
-        val viewModelFactory = TopHeadlinesViewModelFactory(application)
+        val viewModelFactory =
+            ViewModelFactory(application)
         ViewModelProviders.of(
             this, viewModelFactory).get(TopHeadlinesViewModel::class.java)
     }
@@ -96,7 +100,7 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.property.observe(viewLifecycleOwner, Observer {
             news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            adapter = TopHeadlinesAdapter(it)
+            adapter = NewsAdapter(it)
             news_list.adapter = adapter
         })
 

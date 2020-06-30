@@ -11,6 +11,7 @@ import com.example.newsandroid.adapter.CustomAdapterSpinner
 import com.example.newsandroid.database.DBProvider
 import com.example.newsandroid.enums.Category
 import com.example.newsandroid.enums.Country
+import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.repository.NewsRepository
 import com.example.newsandroid.util.createChipCategoryList
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
-enum class NewsApiStatus { LOADING, ERROR, ERROR_WITH_CACHE, ERROR_API, ERROR_API_WITH_CACHE, DONE }
+
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
@@ -53,7 +54,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     val categoryList: LiveData<List<String>>
         get() = _categoryList
-
+    
     val status: LiveData<NewsApiStatus>
         get() = _status
 
@@ -97,9 +98,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         sharedPreferences.edit().putInt("CountryPosition", currentPositionCountry).commit()
     }
 
-
-
-    fun onCountryChanged() {
+    fun onCountryChanged(){
         refreshList()
     }
 
@@ -107,7 +106,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                if(newsRepository.refreshNews(currentCountry!!, currentCategory) !=0){
+                if(newsRepository.refreshNewsTopHeadlines(currentCountry!!, currentCategory) !=0){
                     _status.value = NewsApiStatus.DONE
                 }
                 else{
@@ -157,5 +156,3 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         viewModelJob.cancel()
     }
 }
-
-
