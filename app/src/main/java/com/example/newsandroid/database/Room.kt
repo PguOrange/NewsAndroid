@@ -19,6 +19,9 @@ interface NewsEverythingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll( news: List<DatabaseNewsEverything>)
+
+    @Query("DELETE FROM databasenewseverything")
+    fun deleteAll()
 }
 
 @Database(entities = [DatabaseNewsTopHeadlines::class, DatabaseNewsEverything::class], version = 1)

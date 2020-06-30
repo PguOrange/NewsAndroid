@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -14,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"
-            android:text="Langage:" />
+            android:text="@string/langage" />
         <Spinner
             android:id="@+id/sp_language"
             android:layout_width="0dp"
@@ -26,17 +27,105 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"
-            android:text="Trier par:" />
+            android:text="@string/trier_par" />
         <Spinner
             android:id="@+id/sp_sort"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".7"
             android:entries="@array/sort"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="@string/date_debut" />
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".48"
+            android:ems="10"
+            android:text="@string/null_date"
+            android:layout_marginStart="12dp"
+            android:textSize="15sp"
+            tools:text="26/06/2020"
+            android:textColor="@android:color/black"/>
+        <ImageButton
+            android:id="@+id/button_delete_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".08"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/ic_baseline_cancel_24"
+            android:background="?android:selectableItemBackgroundBorderless"
+            tools:targetApi="lollipop"
+            android:contentDescription="@string/button_delete_from_date"/>
+        <ImageButton
+            android:id="@+id/button_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".145"
+            android:src="@drawable/ic_baseline_calendar_today_24"
+            android:background="?android:selectableItemBackgroundBorderless"
+            tools:targetApi="lollipop"
+            android:layout_marginBottom="2dp"
+            android:contentDescription="@string/button_add_from_date"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:text="@string/date_fin" />
+        <TextView
+            android:id="@+id/to_date_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".48"
+            android:ems="10"
+            android:text="@string/null_date"
+            android:layout_marginStart="12dp"
+            android:textSize="15sp"
+            tools:text="29/06/2020"
+            android:textColor="@android:color/black"/>
+        <ImageButton
+            android:id="@+id/button_delete_to_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".08"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/ic_baseline_cancel_24"
+            android:background="?android:selectableItemBackgroundBorderless"
+            tools:targetApi="lollipop"
+            android:contentDescription="@string/button_delete_to_date"/>
+        <ImageButton
+            android:id="@+id/button_to_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".145"
+            android:src="@drawable/ic_baseline_calendar_today_24"
+            android:background="?android:selectableItemBackgroundBorderless"
+            tools:targetApi="lollipop"
+            android:layout_marginBottom="2dp"
+            android:contentDescription="@string/button_add_to_date"/>
     </LinearLayout>
 </LinearLayout>

@@ -1,12 +1,15 @@
 package com.example.newsandroid.ui.everything
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,13 +21,16 @@ import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
 import com.example.newsandroid.util.transformSpinnerStringToParametersApi
 import kotlinx.android.synthetic.main.everything_fragment.*
-import kotlinx.android.synthetic.main.layout_custom_dialog.*
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
-
+enum class Option {FROMDATE, TODATE}
 class EverythingFragment : Fragment() {
 
     lateinit var adapter: NewsAdapter
+    private var dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
+    private var dateFormatterUS = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     private val everythingViewModel: EverythingViewModel by lazy {
         val application = requireNotNull(this.activity).application
@@ -66,6 +72,11 @@ class EverythingFragment : Fragment() {
                     NewsApiStatus.DONE -> {
                         status_image_everything.visibility = View.GONE
                     }
+                    NewsApiStatus.DONE_EMPTY -> {
+                        status_image_everything.visibility = View.GONE
+                        Toast.makeText(activity, "Aucune News trouvée", Toast.LENGTH_LONG).show()
+                    }
+                    else -> {}
                 }
             }
         })
@@ -81,26 +92,34 @@ class EverythingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         swipe_refresh_layout_everything.setOnRefreshListener {
-            everythingViewModel.getEverythingProperties(everythingViewModel.currentLanguage,everythingViewModel.currentSort)
+            everythingViewModel.getEverythingProperties()
             swipe_refresh_layout_everything.isRefreshing = false
         }
 
-        filter_button_everything.setOnClickListener() {
+        filter_button_everything.setOnClickListener{
             showDialog()
         }
 
     }
 
     private fun showDialog() {
-        val alert = AlertDialog.Builder(context)
         val alertLayout: View = layoutInflater.inflate(R.layout.layout_custom_dialog, null)
+        val alert = AlertDialog.Builder(context)
         alert.setTitle("Filtre de recherche")
         alert.setView(alertLayout)
         alert.setCancelable(false)
+        if (everythingViewModel.currentFromDate=="") alertLayout.button_delete_date.visibility = View.GONE
+        if (everythingViewModel.currentToDate=="") alertLayout.button_delete_to_date.visibility = View.GONE
+        alertLayout.sp_language.setSelection(everythingViewModel.currentLanguagePosition)
+        alertLayout.sp_sort.setSelection(everythingViewModel.currentSortPosition)
+        alertLayout.date_text.text = everythingViewModel.currentFromDateFR
+        alertLayout.to_date_text.text = everythingViewModel.currentToDateFR
         alert.setNegativeButton(
-            "Cancel"
+            "Annuler"
         ) { dialog, which ->
+
         }
 
         alert.setPositiveButton(
@@ -108,10 +127,108 @@ class EverythingFragment : Fragment() {
         ) { dialog, which ->
             val language = alertLayout.sp_language.selectedItem.toString()
             val sort = alertLayout.sp_sort.selectedItem.toString()
-            everythingViewModel.getEverythingProperties(language, transformSpinnerStringToParametersApi(sort))
+            val languagePos = alertLayout.sp_language.selectedItemPosition
+            val sortPos = alertLayout.sp_sort.selectedItemPosition
+
+            if (alertLayout.date_text.text.toString() != "--/--/----") {
+                if (everythingViewModel.tmpDateUsed)
+                everythingViewModel.onFromDateChanged(
+                    dateFormatterUS.format(everythingViewModel.tmpDate.time),
+                    dateFormatter.format(everythingViewModel.tmpDate.time)
+                )
+
+            }
+            else
+                everythingViewModel.onFromDateCanceled()
+
+            if (alertLayout.to_date_text.text.toString() != "--/--/----") {
+                if (everythingViewModel.tmpToDateUsed)
+                    everythingViewModel.onToDateChanged(
+                        dateFormatterUS.format(everythingViewModel.tmpToDate.time),
+                        dateFormatter.format(everythingViewModel.tmpToDate.time)
+                    )
+
+            }
+            else
+                everythingViewModel.onToDateCanceled()
+
+            everythingViewModel.onFilterChanged(language, transformSpinnerStringToParametersApi(sort), languagePos, sortPos)
+            everythingViewModel.getEverythingProperties()
         }
+
+        alert.setNeutralButton(
+            "Réinitialiser"
+        ) { dialog, which ->
+            everythingViewModel.onFilterReset()
+            everythingViewModel.getEverythingProperties()
+        }
+
         val dialog = alert.create()
+
+        alertLayout.button_date.setOnClickListener {
+            setDateTimeField(alertLayout, alertLayout.date_text, alertLayout.button_delete_date, Option.FROMDATE)
+        }
+
+        alertLayout.button_delete_date.setOnClickListener {
+            alertLayout.date_text.text = "--/--/----"
+            alertLayout.button_delete_date.visibility = View.GONE
+            //everythingViewModel.tmpDateUsed = false
+        }
+
+        alertLayout.button_to_date.setOnClickListener {
+            setDateTimeField(alertLayout, alertLayout.to_date_text, alertLayout.button_delete_to_date, Option.TODATE)
+        }
+
+        alertLayout.button_delete_to_date.setOnClickListener {
+            alertLayout.to_date_text.text = "--/--/----"
+            alertLayout.button_delete_to_date.visibility = View.GONE
+            //everythingViewModel.tmpToDateUsed = false
+        }
+
+
+
         dialog.show()
     }
 
+    private fun setDateTimeField(alertLayout: View, text: TextView, button: ImageButton, option: Option){
+        val newCalendar: Calendar = Calendar.getInstance()
+        val datePickerDialog = DatePickerDialog(
+            context!!,
+            OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                val newDate: Calendar = Calendar.getInstance()
+                newDate.set(year, monthOfYear, dayOfMonth)
+                text.text = dateFormatter.format(newDate.time)
+                if (option==Option.FROMDATE) everythingViewModel.onDateSelected(newDate.time)
+                else everythingViewModel.onToDateSelected(newDate.time)
+                button.visibility = View.VISIBLE
+            },
+            newCalendar.get(Calendar.YEAR),
+            newCalendar.get(Calendar.MONTH),
+            newCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+        when (option) {
+            Option.FROMDATE -> {
+                when {
+                    alertLayout.to_date_text.text.toString() == "--/--/----" -> datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+                    everythingViewModel.tmpToDateUsed -> datePickerDialog.datePicker.maxDate = everythingViewModel.tmpToDate.time
+                    everythingViewModel.currentToDate == "" -> datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+                    else -> datePickerDialog.datePicker.maxDate =
+                        dateFormatterUS.parse(everythingViewModel.currentToDate).time
+                }
+            }
+            else -> {
+                datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+                if (alertLayout.date_text.text.toString() != "--/--/----") {
+                    when {
+                        everythingViewModel.tmpDateUsed -> datePickerDialog.datePicker.minDate =
+                            everythingViewModel.tmpDate.time
+                        everythingViewModel.currentFromDate != "" -> datePickerDialog.datePicker.minDate =
+                            dateFormatterUS.parse(everythingViewModel.currentFromDate).time
+                    }
+                }
+            }
+        }
+
+        datePickerDialog.show()
+    }
 }
