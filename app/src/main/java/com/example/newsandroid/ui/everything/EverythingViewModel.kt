@@ -47,6 +47,8 @@ class EverythingViewModel(application: Application) : ViewModel() {
     lateinit var tmpToDate : Date
     var tmpToDateUsed = false
 
+    var currentQuery = sharedPreferences.getString("Query", "bitcoin")
+
     init {
         getEverythingProperties()
     }
@@ -55,8 +57,8 @@ class EverythingViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                val size = if(currentLanguage=="ALL") newsRepository.refreshNewsEverything(language = null, sort = currentSort!!, dateFrom = currentFromDate!!, dateTo = currentToDate!!)
-                else newsRepository.refreshNewsEverything(currentLanguage!!.toLowerCase(Locale.ROOT),
+                val size = if(currentLanguage=="ALL") newsRepository.refreshNewsEverything(query = currentQuery!!, language = null, sort = currentSort!!, dateFrom = currentFromDate!!, dateTo = currentToDate!!)
+                else newsRepository.refreshNewsEverything(currentQuery!!, currentLanguage!!.toLowerCase(Locale.ROOT),
                     currentSort!!, currentFromDate!!, currentToDate!!)
                 Log.d("refreshNews", "Everything News refreshed")
                 if(size==0) {
@@ -139,7 +141,10 @@ class EverythingViewModel(application: Application) : ViewModel() {
         tmpToDateUsed = true
     }
 
-
+    fun onQueryChanged(query: String){
+        currentQuery = query
+        sharedPreferences.edit().putString("Query", query).apply()
+    }
 
     override fun onCleared() {
         super.onCleared()
