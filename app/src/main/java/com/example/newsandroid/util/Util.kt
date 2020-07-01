@@ -21,3 +21,18 @@ fun createChipCategoryList(): List<String>{
     )
     return list
 }
+
+fun transformSpinnerStringToParametersApi(parameter: String):String{
+    when(parameter){
+        "Dernières News" -> {
+            return "publishedAt"
+        }
+        "Populaire" -> {
+            return "popularity"
+        }
+        "Pertinence" -> {
+            return "relevancy"
+        }
+    }
+    return "publishedAt"
+}

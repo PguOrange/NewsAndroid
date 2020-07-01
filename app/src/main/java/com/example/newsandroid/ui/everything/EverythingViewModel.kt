@@ -1,6 +1,7 @@
 package com.example.newsandroid.ui.everything
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 class EverythingViewModel(application: Application) : ViewModel() {
@@ -29,6 +31,24 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main )
 
+    val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
+
+    private val dateDisplay = "--/--/----"
+
+    var currentLanguage = sharedPreferences.getString("Language", "ALL")
+    var currentSort = sharedPreferences.getString("Sort", "relevancy")
+    var currentLanguagePosition = sharedPreferences.getInt("LanguagePosition", 0)
+    var currentSortPosition = sharedPreferences.getInt("SortPosition", 0)
+    var currentFromDate = sharedPreferences.getString("FromDate", "")
+    var currentFromDateFR = sharedPreferences.getString("FromDateFR", dateDisplay)
+    lateinit var tmpDate : Date
+    var tmpDateUsed = false
+
+    var currentToDate = sharedPreferences.getString("ToDate", "")
+    var currentToDateFR = sharedPreferences.getString("ToDateFR", dateDisplay)
+    lateinit var tmpToDate : Date
+    var tmpToDateUsed = false
+
     init {
         getEverythingProperties()
     }
@@ -37,9 +57,18 @@ class EverythingViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                newsRepository.refreshNewsEverything()
+                val size = if(currentLanguage=="ALL") newsRepository.refreshNewsEverything(language = null, sort = currentSort!!, dateFrom = currentFromDate!!, dateTo = currentToDate!!)
+                else newsRepository.refreshNewsEverything(currentLanguage!!.toLowerCase(Locale.ROOT),
+                    currentSort!!, currentFromDate!!, currentToDate!!)
                 Log.d("refreshNews", "Everything News refreshed")
-                _status.value = NewsApiStatus.DONE
+                if(size==0) {
+                    Log.d("refreshNews", "DONE EMPTY")
+                    _status.value = NewsApiStatus.DONE_EMPTY
+                }
+                else {
+                    _status.value = NewsApiStatus.DONE
+                    Log.d("refreshNews", "DONE")
+                }
             }catch (e: Exception){
                 if (property.value.isNullOrEmpty())
                     _status.value = NewsApiStatus.ERROR
@@ -48,6 +77,71 @@ class EverythingViewModel(application: Application) : ViewModel() {
             }
         }
     }
+
+    fun onFilterChanged(language: String, sort: String, languagePos: Int, sortPos: Int){
+        currentLanguage = language
+        currentSort = sort
+        currentLanguagePosition = languagePos
+        currentSortPosition = sortPos
+
+        sharedPreferences.edit().putString("Language", language).apply()
+        sharedPreferences.edit().putString("Sort", sort).apply()
+        sharedPreferences.edit().putInt("LanguagePosition", languagePos).apply()
+        sharedPreferences.edit().putInt("SortPosition", sortPos).apply()
+    }
+
+    fun onFromDateChanged(fromDate: String, fromDateFR: String){
+        currentFromDate = fromDate
+        currentFromDateFR = fromDateFR
+        sharedPreferences.edit().putString("FromDate", fromDate).apply()
+        sharedPreferences.edit().putString("FromDateFR", fromDateFR).apply()
+    }
+
+    fun onToDateChanged(toDate: String, toDateFR: String){
+        currentToDate = toDate
+        currentToDateFR = toDateFR
+        sharedPreferences.edit().putString("ToDate", toDate).apply()
+        sharedPreferences.edit().putString("ToDateFR", toDateFR).apply()
+    }
+
+    fun onFromDateCanceled(){
+        currentFromDate = ""
+        currentFromDateFR = dateDisplay
+        sharedPreferences.edit().putString("FromDate", "").apply()
+        sharedPreferences.edit().putString("FromDateFR", dateDisplay).apply()
+    }
+
+    fun onToDateCanceled(){
+        currentToDate = ""
+        currentToDateFR = dateDisplay
+        sharedPreferences.edit().putString("ToDate", "").apply()
+        sharedPreferences.edit().putString("ToDateFR", dateDisplay).apply()
+    }
+
+    fun onFilterReset(){
+        currentLanguage = "ALL"
+        sharedPreferences.edit().putString("Language", "ALL").apply()
+        currentSort = "relevancy"
+        sharedPreferences.edit().putString("Sort", "relevancy").apply()
+        currentLanguagePosition = 0
+        sharedPreferences.edit().putInt("LanguagePosition", 0).apply()
+        currentSortPosition = 0
+        sharedPreferences.edit().putInt("SortPosition", 0).apply()
+        onFromDateCanceled()
+        onToDateCanceled()
+    }
+
+    fun onDateSelected(dateSelected : Date) {
+        tmpDate = dateSelected
+        tmpDateUsed = true
+    }
+
+    fun onToDateSelected(dateSelected : Date) {
+        tmpToDate = dateSelected
+        tmpToDateUsed = true
+    }
+
+
 
     override fun onCleared() {
         super.onCleared()

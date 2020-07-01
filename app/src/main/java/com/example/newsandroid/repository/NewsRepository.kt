@@ -41,12 +41,15 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
         return size
     }
 
-    suspend fun refreshNewsEverything() {
+    suspend fun refreshNewsEverything(language: String?, sort: String, dateFrom: String, dateTo: String): Int {
+        var size = 0
         withContext(Dispatchers.IO) {
             try {
-                val newsCollection = newsApiService?.getEverything("bitcoin")?.await()
+                val newsCollection = newsApiService?.getEverything("bitcoin", language, sort, dateFrom, dateTo)?.await()
                 if (newsCollection != null) {
+                    database.newsEverythingDao.deleteAll()
                     database.newsEverythingDao.insertAll(convertAPIArticleToDBArticleET(newsCollection.articles))
+                    size = newsCollection.totalResults
                 }else{
                     Log.d("refreshNews", "newsCollection is null")
                 }
@@ -56,5 +59,6 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
 
             }
         }
+        return size
     }
 }
