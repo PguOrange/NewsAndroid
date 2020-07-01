@@ -13,4 +13,8 @@
         android:id="@+id/everythingFragment"
         android:name="com.example.newsandroid.ui.everything.EverythingFragment"
         tools:layout="@layout/everything_fragment" />
+    <fragment
+        android:id="@+id/detailNewsFragment"
+        android:name="com.example.newsandroid.ui.detail.DetailNewsFragment"
+        tools:layout="@layout/detail_news_fragment" />
 </navigation>

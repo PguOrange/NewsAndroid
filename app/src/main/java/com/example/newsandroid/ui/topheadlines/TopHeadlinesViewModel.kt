@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.CustomAdapterSpinner
 import com.example.newsandroid.database.DBProvider
+import com.example.newsandroid.domain.NewsProperty
 import com.example.newsandroid.enums.Category
 import com.example.newsandroid.enums.Country
 import com.example.newsandroid.enums.NewsApiStatus
@@ -65,6 +66,10 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
     private var viewModelJob = Job()
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+    private val _navigateToSelectedProperty = MutableLiveData<NewsProperty>()
+    val navigateToSelectedProperty: LiveData<NewsProperty>
+        get() = _navigateToSelectedProperty
 
     init {
         _categoryList.value = categories
@@ -149,6 +154,14 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
                     return false
             }
         }
+    }
+
+    fun displayPropertyDetails(newsProperty: NewsProperty) {
+        _navigateToSelectedProperty.value = newsProperty
+    }
+
+    fun displayPropertyDetailsComplete() {
+        _navigateToSelectedProperty.value = null
     }
 
     override fun onCleared() {

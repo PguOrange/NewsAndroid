@@ -7,26 +7,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.newsandroid.R
+import com.example.newsandroid.factory.ViewModelFactory
+import com.example.newsandroid.ui.topheadlines.TopHeadlinesViewModel
 
 class DetailNewsFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = DetailNewsFragment()
+    private val detailNewsViewModel: DetailNewsViewModel by lazy {
+        val application = requireNotNull(this.activity).application
+        val viewModelFactory =
+            ViewModelFactory(application)
+        ViewModelProviders.of(
+            this, viewModelFactory).get(DetailNewsViewModel::class.java)
     }
-
-    private lateinit var viewModel: DetailNewsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.detail_news_fragment, container, false)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(DetailNewsViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
+        val root = inflater.inflate(R.layout.detail_news_fragment, container, false)
 
+
+        return root
+    }
 }

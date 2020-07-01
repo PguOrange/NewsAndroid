@@ -8,12 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
 import com.example.newsandroid.domain.NewsProperty
 
-class NewsAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+class NewsAdapter(val items : List<NewsProperty>, private val onClickListener: OnClickListener) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val items = items[position]
+        holder.itemView.setOnClickListener{
+            onClickListener.onClick(items)
+        }
         holder.bind(items)
     }
 
@@ -48,5 +51,9 @@ class NewsAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<NewsAda
                 )
             }
         }
+    }
+
+    class OnClickListener(val clickListener: (newsProperty:NewsProperty) -> Unit) {
+        fun onClick(newsProperty:NewsProperty) = clickListener(newsProperty)
     }
 }

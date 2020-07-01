@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.database.DBProvider
+import com.example.newsandroid.domain.NewsProperty
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.repository.NewsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +49,10 @@ class EverythingViewModel(application: Application) : ViewModel() {
     var tmpToDateUsed = false
 
     var currentQuery = sharedPreferences.getString("Query", "bitcoin")
+
+    private val _navigateToSelectedProperty = MutableLiveData<NewsProperty>()
+    val navigateToSelectedProperty: LiveData<NewsProperty>
+        get() = _navigateToSelectedProperty
 
     init {
         getEverythingProperties()
@@ -144,6 +149,14 @@ class EverythingViewModel(application: Application) : ViewModel() {
     fun onQueryChanged(query: String){
         currentQuery = query
         sharedPreferences.edit().putString("Query", query).apply()
+    }
+
+    fun displayPropertyDetails(newsProperty: NewsProperty) {
+        _navigateToSelectedProperty.value = newsProperty
+    }
+
+    fun displayPropertyDetailsComplete() {
+        _navigateToSelectedProperty.value = null
     }
 
     override fun onCleared() {
