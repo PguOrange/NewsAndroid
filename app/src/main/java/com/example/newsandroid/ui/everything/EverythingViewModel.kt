@@ -33,17 +33,19 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
 
+    private val dateDisplay = "--/--/----"
+
     var currentLanguage = sharedPreferences.getString("Language", "ALL")
     var currentSort = sharedPreferences.getString("Sort", "relevancy")
     var currentLanguagePosition = sharedPreferences.getInt("LanguagePosition", 0)
     var currentSortPosition = sharedPreferences.getInt("SortPosition", 0)
     var currentFromDate = sharedPreferences.getString("FromDate", "")
-    var currentFromDateFR = sharedPreferences.getString("FromDateFR", "--/--/----")
+    var currentFromDateFR = sharedPreferences.getString("FromDateFR", dateDisplay)
     lateinit var tmpDate : Date
     var tmpDateUsed = false
 
     var currentToDate = sharedPreferences.getString("ToDate", "")
-    var currentToDateFR = sharedPreferences.getString("ToDateFR", "--/--/----")
+    var currentToDateFR = sharedPreferences.getString("ToDateFR", dateDisplay)
     lateinit var tmpToDate : Date
     var tmpToDateUsed = false
 
@@ -104,16 +106,16 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     fun onFromDateCanceled(){
         currentFromDate = ""
-        currentFromDateFR = "--/--/----"
+        currentFromDateFR = dateDisplay
         sharedPreferences.edit().putString("FromDate", "").apply()
-        sharedPreferences.edit().putString("FromDateFR", "--/--/----").apply()
+        sharedPreferences.edit().putString("FromDateFR", dateDisplay).apply()
     }
 
     fun onToDateCanceled(){
         currentToDate = ""
-        currentToDateFR = "--/--/----"
+        currentToDateFR = dateDisplay
         sharedPreferences.edit().putString("ToDate", "").apply()
-        sharedPreferences.edit().putString("ToDateFR", "--/--/----").apply()
+        sharedPreferences.edit().putString("ToDateFR", dateDisplay).apply()
     }
 
     fun onFilterReset(){
