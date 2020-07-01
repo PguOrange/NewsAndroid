@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.example.newsandroid.R
 import com.example.newsandroid.factory.ViewModelFactory
 import com.example.newsandroid.ui.topheadlines.TopHeadlinesViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 
 class DetailNewsFragment : Fragment() {
 
@@ -27,7 +28,7 @@ class DetailNewsFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.detail_news_fragment, container, false)
 
-
         return root
     }
+
 }

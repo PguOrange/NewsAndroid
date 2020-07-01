@@ -1,30 +1,31 @@
 package com.example.newsandroid.ui.topheadlines
 
 import android.os.Bundle
-import android.util.Log
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.core.app.SharedElementCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
-import com.example.newsandroid.adapter.CustomAdapterSpinner
-import com.google.android.material.chip.Chip
 import com.example.newsandroid.adapter.NewsAdapter
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
+import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
 
 class TopHeadlinesFragment : Fragment() {
 
     lateinit var adapter: NewsAdapter
+
 
     private val topHeadlinesViewModel: TopHeadlinesViewModel by lazy {
         val application = requireNotNull(this.activity).application
@@ -115,6 +116,8 @@ class TopHeadlinesFragment : Fragment() {
                 topHeadlinesViewModel.displayPropertyDetailsComplete()
             }
         })
+
+
 
         return root
     }

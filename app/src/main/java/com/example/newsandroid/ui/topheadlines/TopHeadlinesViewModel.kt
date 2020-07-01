@@ -164,6 +164,9 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         _navigateToSelectedProperty.value = null
     }
 
+
+
+
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()

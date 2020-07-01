@@ -8,11 +8,19 @@
     <fragment
         android:id="@+id/topHeadlinesFragment"
         android:name="com.example.newsandroid.ui.topheadlines.TopHeadlinesFragment"
-        tools:layout="@layout/top_headlines_fragment"/>
+        tools:layout="@layout/top_headlines_fragment">
+        <action
+            android:id="@+id/action_topHeadlinesFragment_to_detailNewsFragment"
+            app:destination="@id/detailNewsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/everythingFragment"
         android:name="com.example.newsandroid.ui.everything.EverythingFragment"
-        tools:layout="@layout/everything_fragment" />
+        tools:layout="@layout/everything_fragment" >
+        <action
+            android:id="@+id/action_everythingFragment_to_detailNewsFragment"
+            app:destination="@id/detailNewsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/detailNewsFragment"
         android:name="com.example.newsandroid.ui.detail.DetailNewsFragment"

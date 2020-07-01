@@ -13,6 +13,7 @@
     <string name="button_delete_to_date">button delete to date</string>
     <string name="button_add_to_date">button add to date</string>
     <string name="filter_button_for_everything">filter button for everything</string>
+    <string name="textTransitionName">textTransitionName</string>
 
 
     <string-array name="language">
