@@ -24,7 +24,7 @@ interface NewsEverythingDao {
     fun deleteAll()
 }
 
-@Database(entities = [DatabaseNewsTopHeadlines::class, DatabaseNewsEverything::class], version = 1)
+@Database(entities = [DatabaseNewsTopHeadlines::class, DatabaseNewsEverything::class], version = 2)
 abstract class NewsDatabase: RoomDatabase() {
     abstract val newsTopHeadlinesDao: NewsTopHeadlinesDao
     abstract val newsEverythingDao: NewsEverythingDao
