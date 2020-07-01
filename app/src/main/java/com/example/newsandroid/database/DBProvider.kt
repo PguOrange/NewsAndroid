@@ -17,16 +17,24 @@ class DBProvider {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
                         NewsDatabase::class.java,
                         dbName)
-                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_0_1, MIGRATION_1_2)
                         .build()
                 }
             }
             return INSTANCE
         }
 
-        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+        private val MIGRATION_0_1: Migration = object : Migration(0, 1) {
             override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE databasenewstopheadlines (id INTEGER, title TEXT, author TEXT, description TEXT, url TEXT, urlToImage TEXT, publishedAt TEXT, content TEXT, PRIMARY KEY(id))")
+            }
+        }
 
+        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE databasenewseverything (id INTEGER, title TEXT, author TEXT, description TEXT, url TEXT, urlToImage TEXT, publishedAt TEXT, content TEXT, PRIMARY KEY(id))")
             }
         }
     }
