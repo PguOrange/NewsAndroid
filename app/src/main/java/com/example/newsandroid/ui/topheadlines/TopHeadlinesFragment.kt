@@ -1,24 +1,32 @@
 package com.example.newsandroid.ui.topheadlines
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.transition.TransitionInflater
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.core.app.SharedElementCallback
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
+import com.example.newsandroid.ui.detail.DetailNewsFragment
+import com.example.newsandroid.ui.detail.DetailNewsViewModel
 import com.google.android.material.chip.Chip
+import kotlinx.android.synthetic.main.detail_news_fragment.*
+import kotlinx.android.synthetic.main.list_item_news.*
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
 
@@ -111,8 +119,17 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
             if ( null != it ) {
-                //this.findNavController().navigate(OverviewFragmentDirections.actionShowDetail(it))
                 this.findNavController().navigate(R.id.detailNewsFragment)
+                //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                //    requireActivity(),
+                //    Pair(rootView, getString(R.string.transition_root)), // Transition for background view
+                //    Pair(imageView, getString(R.string.transition_image)), // Transition for user's avatar
+                //    Pair(requireActivity().findViewById(R.id.fab), getString(R.string.transition_fab)), // Transition for fab
+                //    Pair(requireActivity().findViewById(R.id.bar), getString(R.string.transition_bar))) // Transition for Bottom App Bar
+//
+                //// Launch second activity with Navigation Component API
+                //val extras = ActivityNavigatorExtras(options)
+                //findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailActivity(mail.id), extras)
                 topHeadlinesViewModel.displayPropertyDetailsComplete()
             }
         })
