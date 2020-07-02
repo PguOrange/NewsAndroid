@@ -35,7 +35,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     private val dateDisplay = "--/--/----"
 
-    var currentLanguage = sharedPreferences.getString("Language", "ALL")
+    var currentLanguage = sharedPreferences.getString("Language", "FR")
     var currentSort = sharedPreferences.getString("Sort", "relevancy")
     var currentLanguagePosition = sharedPreferences.getInt("LanguagePosition", 0)
     var currentSortPosition = sharedPreferences.getInt("SortPosition", 0)
@@ -121,8 +121,8 @@ class EverythingViewModel(application: Application) : ViewModel() {
     }
 
     fun onFilterReset(){
-        currentLanguage = "ALL"
-        sharedPreferences.edit().putString("Language", "ALL").apply()
+        currentLanguage = "FR"
+        sharedPreferences.edit().putString("Language", "FR").apply()
         currentSort = "relevancy"
         sharedPreferences.edit().putString("Sort", "relevancy").apply()
         currentLanguagePosition = 0
