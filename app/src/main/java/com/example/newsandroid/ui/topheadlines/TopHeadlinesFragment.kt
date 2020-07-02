@@ -119,17 +119,14 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
             if ( null != it ) {
-                this.findNavController().navigate(R.id.detailNewsFragment)
-                //val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                //    requireActivity(),
-                //    Pair(rootView, getString(R.string.transition_root)), // Transition for background view
-                //    Pair(imageView, getString(R.string.transition_image)), // Transition for user's avatar
-                //    Pair(requireActivity().findViewById(R.id.fab), getString(R.string.transition_fab)), // Transition for fab
-                //    Pair(requireActivity().findViewById(R.id.bar), getString(R.string.transition_bar))) // Transition for Bottom App Bar
-//
-                //// Launch second activity with Navigation Component API
-                //val extras = ActivityNavigatorExtras(options)
-                //findNavController().navigate(MainFragmentDirections.actionMainFragmentToDetailActivity(mail.id), extras)
+                //this.findNavController().navigate(R.id.detailNewsFragment)
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    requireActivity(),
+                    Pair(news_title, getString(R.string.textTransitionName))
+                    )
+
+                val extras = ActivityNavigatorExtras(options)
+                findNavController().navigate(TopHeadlinesFragmentDirections.actionTopHeadlinesFragmentToDetailNewsFragment(it.title),extras)
                 topHeadlinesViewModel.displayPropertyDetailsComplete()
             }
         })

@@ -24,5 +24,9 @@
     <fragment
         android:id="@+id/detailNewsFragment"
         android:name="com.example.newsandroid.ui.detail.DetailNewsFragment"
-        tools:layout="@layout/detail_news_fragment" />
+        tools:layout="@layout/detail_news_fragment" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>
