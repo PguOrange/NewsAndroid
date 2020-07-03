@@ -19,11 +19,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
+import com.example.newsandroid.enums.Direction
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
+import com.example.newsandroid.ui.topheadlines.TopHeadlinesFragment
 import com.example.newsandroid.util.transformSpinnerStringToParametersApi
 import kotlinx.android.synthetic.main.everything_fragment.*
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
+import kotlinx.android.synthetic.main.top_headlines_fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,10 +88,15 @@ class EverythingFragment : Fragment() {
 
         everythingViewModel.property.observe(viewLifecycleOwner, Observer {
             everything_news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            adapter = NewsAdapter(it, NewsAdapter.OnClickListener{ it ->
-                everythingViewModel.displayPropertyDetails(it)
-            })
-            everything_news_list.adapter = adapter
+            val adapter = NewsAdapter(it, Direction.EVERYTHING)
+            everything_news_list.apply {
+                this.adapter = adapter
+                postponeEnterTransition()
+                viewTreeObserver.addOnPreDrawListener {
+                    startPostponedEnterTransition()
+                    true
+                }
+            }
         })
 
         everythingViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {

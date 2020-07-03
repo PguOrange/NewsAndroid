@@ -1,7 +1,6 @@
 package com.example.newsandroid.ui.topheadlines
 
-import android.app.Activity
-import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,25 +8,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.ActivityNavigatorExtras
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.newsandroid.MainActivity
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
+import com.example.newsandroid.domain.NewsProperty
+import com.example.newsandroid.enums.Direction
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
 import com.example.newsandroid.ui.detail.DetailNewsFragment
-import com.example.newsandroid.ui.detail.DetailNewsViewModel
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.detail_news_fragment.*
 import kotlinx.android.synthetic.main.list_item_news.*
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
+import java.text.FieldPosition
 
 
 class TopHeadlinesFragment : Fragment() {
@@ -111,22 +110,32 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.property.observe(viewLifecycleOwner, Observer {
             news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            adapter = NewsAdapter(it, NewsAdapter.OnClickListener{ it ->
-                topHeadlinesViewModel.displayPropertyDetails(it)
-            })
-            news_list.adapter = adapter
+            //adapter = NewsAdapter(it, NewsAdapter.OnClickListener{ it ->
+            //    topHeadlinesViewModel.displayPropertyDetails(it)
+            //}, this)
+            //news_list.adapter = adapter
+            val adapter = NewsAdapter(it, Direction.TOPHEADLINES)
+            news_list.apply {
+                this.adapter = adapter
+                postponeEnterTransition()
+                viewTreeObserver.addOnPreDrawListener {
+                    startPostponedEnterTransition()
+                    true
+                }
+            }
+
         })
 
         topHeadlinesViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
             if ( null != it ) {
-                //this.findNavController().navigate(R.id.detailNewsFragment)
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    requireActivity(),
-                    Pair(news_title, getString(R.string.textTransitionName))
-                    )
 
-                val extras = ActivityNavigatorExtras(options)
-                findNavController().navigate(TopHeadlinesFragmentDirections.actionTopHeadlinesFragmentToDetailNewsFragment(it.title),extras)
+                //val extras = FragmentNavigatorExtras(
+                //    news_title to "textTransitionName"
+                //)
+                //val action = TopHeadlinesFragmentDirections.actionTopHeadlinesFragmentToDetailNewsFragment(it)
+                //NavHostFragment.findNavController(this@TopHeadlinesFragment).navigate(action,extras)
+
+
                 topHeadlinesViewModel.displayPropertyDetailsComplete()
             }
         })
@@ -138,6 +147,7 @@ class TopHeadlinesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         country_spinner.adapter = topHeadlinesViewModel.spinnerCustomAdapter
 
@@ -161,10 +171,6 @@ class TopHeadlinesFragment : Fragment() {
             }
 
         }
-
-
-
-
         swipe_refresh_recycler.setOnRefreshListener {
             topHeadlinesViewModel.getTopHeadlinesProperties()
             swipe_refresh_recycler.isRefreshing = false
