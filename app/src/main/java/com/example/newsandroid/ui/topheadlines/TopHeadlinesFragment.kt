@@ -110,10 +110,6 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.property.observe(viewLifecycleOwner, Observer {
             news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            //adapter = NewsAdapter(it, NewsAdapter.OnClickListener{ it ->
-            //    topHeadlinesViewModel.displayPropertyDetails(it)
-            //}, this)
-            //news_list.adapter = adapter
             val adapter = NewsAdapter(it, Direction.TOPHEADLINES)
             news_list.apply {
                 this.adapter = adapter
@@ -124,20 +120,6 @@ class TopHeadlinesFragment : Fragment() {
                 }
             }
 
-        })
-
-        topHeadlinesViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
-            if ( null != it ) {
-
-                //val extras = FragmentNavigatorExtras(
-                //    news_title to "textTransitionName"
-                //)
-                //val action = TopHeadlinesFragmentDirections.actionTopHeadlinesFragmentToDetailNewsFragment(it)
-                //NavHostFragment.findNavController(this@TopHeadlinesFragment).navigate(action,extras)
-
-
-                topHeadlinesViewModel.displayPropertyDetailsComplete()
-            }
         })
 
 

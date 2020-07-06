@@ -18,7 +18,9 @@ class MainActivity : AppCompatActivity() {
         bottom_navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.detailNewsFragment -> bottom_navigation?.visibility = View.GONE
+                R.id.detailNewsFragment -> {
+                    bottom_navigation?.visibility = View.GONE
+                }
                 else -> bottom_navigation?.visibility = View.VISIBLE
             }
         }

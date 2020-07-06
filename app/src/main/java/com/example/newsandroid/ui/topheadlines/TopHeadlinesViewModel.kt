@@ -2,14 +2,12 @@ package com.example.newsandroid.ui.topheadlines
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.CustomAdapterSpinner
 import com.example.newsandroid.database.DBProvider
-import com.example.newsandroid.domain.NewsProperty
 import com.example.newsandroid.enums.Category
 import com.example.newsandroid.enums.Country
 import com.example.newsandroid.enums.NewsApiStatus
@@ -25,21 +23,21 @@ import kotlinx.coroutines.launch
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
-    val imageSpinner = arrayOf(
+    private val imageSpinner = arrayOf(
         R.drawable.fr,
         R.drawable.us
     )
 
-    val imageNameSpinner = arrayOf(
+    private val imageNameSpinner = arrayOf(
         "FR", "US"
     )
 
-    val spinnerCustomAdapter = CustomAdapterSpinner(application, imageSpinner, imageNameSpinner);
+    val spinnerCustomAdapter = CustomAdapterSpinner(application, imageSpinner, imageNameSpinner)
 
 
-    val errorApiMessage = "HTTP 400 Bad Request"
+    private val errorApiMessage = "HTTP 400 Bad Request"
 
-    val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
+    private val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
 
     var currentCountry = sharedPreferences.getString("Country", Country.FR.value)
     var currentCategory = sharedPreferences.getString("Category", Category.GENERAL.value)
@@ -67,10 +65,6 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private val _navigateToSelectedProperty = MutableLiveData<NewsProperty>()
-    val navigateToSelectedProperty: LiveData<NewsProperty>
-        get() = _navigateToSelectedProperty
-
     init {
         _categoryList.value = categories
         getTopHeadlinesProperties()
@@ -84,7 +78,7 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         if (this.filter.update(filter, isChecked)) {
 
             currentCategory = this.filter.currentValue.toString()//currentCategory
-            sharedPreferences.edit().putString("Category",this.filter.currentValue.toString()).commit()
+            sharedPreferences.edit().putString("Category",this.filter.currentValue.toString()).apply()
             refreshList()
         }
     }
@@ -99,8 +93,8 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
             currentCountry = Country.FR.value
             currentPositionCountry = Country.FR.position
         }
-        sharedPreferences.edit().putString("Country", currentCountry).commit()
-        sharedPreferences.edit().putInt("CountryPosition", currentPositionCountry).commit()
+        sharedPreferences.edit().putString("Country", currentCountry).apply()
+        sharedPreferences.edit().putInt("CountryPosition", currentPositionCountry).apply()
     }
 
     fun onCountryChanged(){
@@ -141,29 +135,20 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
             private set
 
         fun update(changedFilter: String, isChecked: Boolean): Boolean {
-            when {
+            return when {
                 isChecked -> {
                     currentValue = changedFilter
-                    return true
+                    true
                 }
                 currentValue == changedFilter -> {
                     currentValue = Category.GENERAL.value
-                    return true
+                    true
                 }
                 else ->
-                    return false
+                    false
             }
         }
     }
-
-    fun displayPropertyDetails(newsProperty: NewsProperty) {
-        _navigateToSelectedProperty.value = newsProperty
-    }
-
-    fun displayPropertyDetailsComplete() {
-        _navigateToSelectedProperty.value = null
-    }
-
 
 
 

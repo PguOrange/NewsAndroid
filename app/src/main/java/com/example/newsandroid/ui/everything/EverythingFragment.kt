@@ -99,13 +99,6 @@ class EverythingFragment : Fragment() {
             }
         })
 
-        everythingViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
-            if ( null != it ) {
-                this.findNavController().navigate(R.id.detailNewsFragment)
-                everythingViewModel.displayPropertyDetailsComplete()
-            }
-        })
-
         return root
     }
 
