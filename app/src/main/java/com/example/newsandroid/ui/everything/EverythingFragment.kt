@@ -86,6 +86,7 @@ class EverythingFragment : Fragment() {
             everything_news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
             adapter = NewsAdapter(it)
             everything_news_list.adapter = adapter
+            searchView.queryHint = everythingViewModel.currentQuery
         })
 
         return root
