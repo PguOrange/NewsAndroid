@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.domain.NewsProperty
-import com.example.newsandroid.enums.NewsApiStatus
 
 class DetailNewsViewModel(application: Application) : ViewModel() {
 
