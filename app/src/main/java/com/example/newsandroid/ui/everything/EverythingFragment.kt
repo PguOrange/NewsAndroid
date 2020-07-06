@@ -97,6 +97,7 @@ class EverythingFragment : Fragment() {
                     true
                 }
             }
+            searchView.queryHint = everythingViewModel.currentQuery
         })
 
         return root
