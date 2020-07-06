@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,25 +14,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
 import com.example.newsandroid.enums.Direction
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
-import com.example.newsandroid.ui.topheadlines.TopHeadlinesFragment
 import com.example.newsandroid.util.transformSpinnerStringToParametersApi
 import kotlinx.android.synthetic.main.everything_fragment.*
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
-import kotlinx.android.synthetic.main.top_headlines_fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 enum class Option {FROMDATE, TODATE}
 class EverythingFragment : Fragment() {
 
-    lateinit var adapter: NewsAdapter
     private var dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     private var dateFormatterUS = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
