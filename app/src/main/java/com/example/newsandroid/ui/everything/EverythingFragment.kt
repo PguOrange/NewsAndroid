@@ -15,8 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
-import com.example.newsandroid.enums.Direction
-import com.example.newsandroid.enums.Category
+import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.enums.SortBy
 import com.example.newsandroid.factory.ViewModelFactory
@@ -82,7 +81,7 @@ class EverythingFragment : Fragment() {
 
         everythingViewModel.property.observe(viewLifecycleOwner, Observer {
             everything_news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            val adapter = NewsAdapter(it, Direction.EVERYTHING)
+            val adapter = NewsAdapter(it, NewsListContainer.EVERYTHING)
             everything_news_list.apply {
                 this.adapter = adapter
                 postponeEnterTransition()
@@ -129,14 +128,19 @@ class EverythingFragment : Fragment() {
         val alertLayout: View = layoutInflater.inflate(R.layout.layout_custom_dialog, null)
         val alert = AlertDialog.Builder(context)
         val sortBy : List<SortBy> = listOf(
-            SortBy.Pertinence,
-            SortBy.Dernieres,
-            SortBy.Populaire
+            SortBy.Relevancy,
+            SortBy.PublishedAt,
+            SortBy.Popularity
+        )
+        var sortByFR : List<String> = listOf(
+            SortBy.Relevancy.displayFR,
+            SortBy.PublishedAt.displayFR,
+            SortBy.Popularity.displayFR
         )
         alert.setTitle("Filtre de recherche")
         alert.setView(alertLayout)
         alert.setCancelable(false)
-        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortBy)
+        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortByFR)
         // Set layout to use when the list of choices appear
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Set Adapter to Spinner
@@ -185,7 +189,7 @@ class EverythingFragment : Fragment() {
 
             //everythingViewModel.onFilterChanged(language, transformSpinnerStringToParametersApi(sort), languagePos, sortPos)
             Log.d("SelectedItemPosition", alertLayout.sp_sort.selectedItemPosition.toString() + " "+ sortBy[alertLayout.sp_sort.selectedItemPosition].toString() )
-            everythingViewModel.onFilterChanged(language, sortBy[alertLayout.sp_sort.selectedItemPosition].paramApi, languagePos, sortPos)
+            everythingViewModel.onFilterChanged(language, sortBy[alertLayout.sp_sort.selectedItemPosition].toString(), languagePos, sortPos)
             everythingViewModel.getEverythingProperties()
         }
 

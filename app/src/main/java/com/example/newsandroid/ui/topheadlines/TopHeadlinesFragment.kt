@@ -1,8 +1,6 @@
 package com.example.newsandroid.ui.topheadlines
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,22 +9,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.FragmentNavigator
-import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.newsandroid.MainActivity
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
-import com.example.newsandroid.domain.NewsProperty
-import com.example.newsandroid.enums.Direction
+import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
-import com.example.newsandroid.ui.detail.DetailNewsFragment
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.list_item_news.*
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
-import java.text.FieldPosition
 
 
 class TopHeadlinesFragment : Fragment() {
@@ -110,7 +100,7 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.property.observe(viewLifecycleOwner, Observer {
             news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            val adapter = NewsAdapter(it, Direction.TOPHEADLINES)
+            val adapter = NewsAdapter(it, NewsListContainer.TOPHEADLINES)
             news_list.apply {
                 this.adapter = adapter
                 postponeEnterTransition()

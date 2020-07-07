@@ -9,16 +9,16 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
 import com.example.newsandroid.domain.NewsProperty
-import com.example.newsandroid.enums.Direction
+import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.ui.everything.EverythingFragmentDirections
 import com.example.newsandroid.ui.topheadlines.TopHeadlinesFragmentDirections
 import kotlinx.android.synthetic.main.list_item_news.view.*
 
-class NewsAdapter(private val items : List<NewsProperty>, direction : Direction) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+class NewsAdapter(private val items : List<NewsProperty>, private val newsListContainer : NewsListContainer) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     override fun getItemCount() = items.size
 
-    private val myDirections = direction
+    private val myNewsListContainer = newsListContainer
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         items[position].let { news ->
@@ -65,7 +65,7 @@ class NewsAdapter(private val items : List<NewsProperty>, direction : Direction)
 
     private fun createOnClickListener(newsProperty: NewsProperty, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val directions = if (myDirections==Direction.TOPHEADLINES)
+            val newsListContainer = if (myNewsListContainer==NewsListContainer.TOPHEADLINES)
                 TopHeadlinesFragmentDirections.actionTopHeadlinesFragmentToDetailNewsFragment(newsProperty, position)
             else
                 EverythingFragmentDirections.actionEverythingFragmentToDetailNewsFragment(newsProperty, position)
@@ -75,7 +75,7 @@ class NewsAdapter(private val items : List<NewsProperty>, direction : Direction)
                 it.news_description to "description_${position}"
             )
 
-            it.findNavController().navigate(directions, extras)
+            it.findNavController().navigate(newsListContainer, extras)
         }
     }
 }
