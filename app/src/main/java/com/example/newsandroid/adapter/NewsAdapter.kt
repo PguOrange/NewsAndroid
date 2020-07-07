@@ -23,7 +23,7 @@ import com.example.newsandroid.ui.topheadlines.TopHeadlinesFragment
 import com.example.newsandroid.ui.topheadlines.TopHeadlinesFragmentDirections
 import kotlinx.android.synthetic.main.list_item_news.view.*
 
-class NewsAdapter(private val items : List<NewsProperty>, private val direction : Direction) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+class NewsAdapter(private val items : List<NewsProperty>, direction : Direction) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     override fun getItemCount() = items.size
 
