@@ -8,18 +8,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
+import com.example.newsandroid.enums.Category
 import com.example.newsandroid.enums.NewsApiStatus
+import com.example.newsandroid.enums.SortBy
 import com.example.newsandroid.factory.ViewModelFactory
-import com.example.newsandroid.util.transformSpinnerStringToParametersApi
 import kotlinx.android.synthetic.main.everything_fragment.*
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import java.text.SimpleDateFormat
@@ -85,6 +84,7 @@ class EverythingFragment : Fragment() {
             everything_news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
             adapter = NewsAdapter(it)
             everything_news_list.adapter = adapter
+            searchView.queryHint = everythingViewModel.currentQuery
         })
 
         return root
@@ -102,14 +102,44 @@ class EverythingFragment : Fragment() {
             showDialog()
         }
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (!query.isNullOrEmpty())
+                everythingViewModel.onQueryChanged(query)
+                everythingViewModel.getEverythingProperties()
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+
+        })
+
     }
 
     private fun showDialog() {
         val alertLayout: View = layoutInflater.inflate(R.layout.layout_custom_dialog, null)
         val alert = AlertDialog.Builder(context)
+        val sortBy : List<SortBy> = listOf(
+            SortBy.Relevancy,
+            SortBy.PublishedAt,
+            SortBy.Popularity
+        )
+        var sortByFR : List<String> = listOf(
+            SortBy.Relevancy.displayFR,
+            SortBy.PublishedAt.displayFR,
+            SortBy.Popularity.displayFR
+        )
         alert.setTitle("Filtre de recherche")
         alert.setView(alertLayout)
         alert.setCancelable(false)
+        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortByFR)
+        // Set layout to use when the list of choices appear
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Set Adapter to Spinner
+        alertLayout.sp_sort!!.adapter = aa
+
         if (everythingViewModel.currentFromDate=="") alertLayout.button_delete_date.visibility = View.GONE
         if (everythingViewModel.currentToDate=="") alertLayout.button_delete_to_date.visibility = View.GONE
         alertLayout.sp_language.setSelection(everythingViewModel.currentLanguagePosition)
@@ -126,7 +156,6 @@ class EverythingFragment : Fragment() {
             "OK"
         ) { dialog, which ->
             val language = alertLayout.sp_language.selectedItem.toString()
-            val sort = alertLayout.sp_sort.selectedItem.toString()
             val languagePos = alertLayout.sp_language.selectedItemPosition
             val sortPos = alertLayout.sp_sort.selectedItemPosition
 
@@ -152,7 +181,9 @@ class EverythingFragment : Fragment() {
             else
                 everythingViewModel.onToDateCanceled()
 
-            everythingViewModel.onFilterChanged(language, transformSpinnerStringToParametersApi(sort), languagePos, sortPos)
+            //everythingViewModel.onFilterChanged(language, transformSpinnerStringToParametersApi(sort), languagePos, sortPos)
+            Log.d("SelectedItemPosition", alertLayout.sp_sort.selectedItemPosition.toString() + " "+ sortBy[alertLayout.sp_sort.selectedItemPosition].toString() )
+            everythingViewModel.onFilterChanged(language, sortBy[alertLayout.sp_sort.selectedItemPosition].toString(), languagePos, sortPos)
             everythingViewModel.getEverythingProperties()
         }
 
