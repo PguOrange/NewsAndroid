@@ -45,7 +45,7 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
         var size = 0
         withContext(Dispatchers.IO) {
             try {
-                val newsCollection = newsApiService?.getEverything(query, language, sort, dateFrom, dateTo)?.await()
+                val newsCollection = newsApiService?.getEverything(query, 1, language, sort, dateFrom, dateTo)?.await()
                 if (newsCollection != null) {
                     database.newsDao.deleteAllEverything()
                     database.newsDao.insertAllEverything(convertAPIArticleToDBArticleET(newsCollection.articles))
