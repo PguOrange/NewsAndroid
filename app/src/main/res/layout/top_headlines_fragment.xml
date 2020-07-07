@@ -6,7 +6,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.topheadlines.TopHeadlinesFragment">
+    tools:context=".ui.topheadlines.TopHeadlinesFragment"
+    android:layout_marginBottom="?attr/actionBarSize">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/filter"

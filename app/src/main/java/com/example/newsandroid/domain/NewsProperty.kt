@@ -2,6 +2,7 @@ package com.example.newsandroid.domain
 
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import java.io.Serializable
 
 data class NewsProperty (
     val title: String,
@@ -11,4 +12,4 @@ data class NewsProperty (
     val urlToImage : String,
     val publishedAt : String,
     val content : String
-)
+) : Serializable

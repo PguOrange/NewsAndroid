@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
-import com.example.newsandroid.enums.Category
+import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.enums.SortBy
 import com.example.newsandroid.factory.ViewModelFactory
@@ -27,7 +27,6 @@ import java.util.*
 enum class Option {FROMDATE, TODATE}
 class EverythingFragment : Fragment() {
 
-    lateinit var adapter: NewsAdapter
     private var dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     private var dateFormatterUS = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
@@ -82,8 +81,15 @@ class EverythingFragment : Fragment() {
 
         everythingViewModel.property.observe(viewLifecycleOwner, Observer {
             everything_news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            adapter = NewsAdapter(it)
-            everything_news_list.adapter = adapter
+            val adapter = NewsAdapter(it, NewsListContainer.EVERYTHING)
+            everything_news_list.apply {
+                this.adapter = adapter
+                postponeEnterTransition()
+                viewTreeObserver.addOnPreDrawListener {
+                    startPostponedEnterTransition()
+                    true
+                }
+            }
             searchView.queryHint = everythingViewModel.currentQuery
         })
 

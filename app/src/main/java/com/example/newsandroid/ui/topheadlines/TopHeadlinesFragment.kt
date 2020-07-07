@@ -1,7 +1,6 @@
 package com.example.newsandroid.ui.topheadlines
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +11,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
-import com.example.newsandroid.adapter.CustomAdapterSpinner
-import com.google.android.material.chip.Chip
 import com.example.newsandroid.adapter.NewsAdapter
+import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.factory.ViewModelFactory
+import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.top_headlines_fragment.*
 
 
 class TopHeadlinesFragment : Fragment() {
 
     lateinit var adapter: NewsAdapter
+
 
     private val topHeadlinesViewModel: TopHeadlinesViewModel by lazy {
         val application = requireNotNull(this.activity).application
@@ -100,15 +100,26 @@ class TopHeadlinesFragment : Fragment() {
 
         topHeadlinesViewModel.property.observe(viewLifecycleOwner, Observer {
             news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            adapter = NewsAdapter(it)
-            news_list.adapter = adapter
+            val adapter = NewsAdapter(it, NewsListContainer.TOPHEADLINES)
+            news_list.apply {
+                this.adapter = adapter
+                postponeEnterTransition()
+                viewTreeObserver.addOnPreDrawListener {
+                    startPostponedEnterTransition()
+                    true
+                }
+            }
+
         })
+
+
 
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         country_spinner.adapter = topHeadlinesViewModel.spinnerCustomAdapter
 
@@ -132,10 +143,6 @@ class TopHeadlinesFragment : Fragment() {
             }
 
         }
-
-
-
-
         swipe_refresh_recycler.setOnRefreshListener {
             topHeadlinesViewModel.getTopHeadlinesProperties()
             swipe_refresh_recycler.isRefreshing = false

@@ -3,19 +3,33 @@ package com.example.newsandroid.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsandroid.R
 import com.example.newsandroid.domain.NewsProperty
+import com.example.newsandroid.enums.NewsListContainer
+import com.example.newsandroid.ui.everything.EverythingFragmentDirections
+import com.example.newsandroid.ui.topheadlines.TopHeadlinesFragmentDirections
+import kotlinx.android.synthetic.main.list_item_news.view.*
 
-class NewsAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+class NewsAdapter(private val items : List<NewsProperty>, private val newsListContainer : NewsListContainer) : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
 
     override fun getItemCount() = items.size
 
+    private val myNewsListContainer = newsListContainer
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val items = items[position]
-        holder.bind(items)
+        items[position].let { news ->
+            with(holder) {
+                itemView.tag = news
+                bind(news, createOnClickListener(news, position))
+            }
+        }
+
     }
+
 
 
 
@@ -26,16 +40,18 @@ class NewsAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<NewsAda
     }
 
     class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val title: TextView = itemView.findViewById(R.id.news_title)
-        val author: TextView = itemView.findViewById(R.id.news_author)
-        val description: TextView = itemView.findViewById(R.id.news_description)
-
         fun bind(
-            item: NewsProperty
+            item: NewsProperty,
+            listener : View.OnClickListener
+
         ) {
-            title.text = item.title
-            author.text = item.author
-            description.text = item.description
+            itemView.news_title.text = item.title
+            itemView.news_author.text = item.author
+            itemView.news_description.text = item.description
+            ViewCompat.setTransitionName(itemView.news_title, "title_${position}")
+            ViewCompat.setTransitionName(itemView.news_author, "author_${position}")
+            ViewCompat.setTransitionName(itemView.news_description, "description_${position}")
+            itemView.setOnClickListener(listener)
         }
 
         companion object {
@@ -49,4 +65,27 @@ class NewsAdapter(val items : List<NewsProperty>) : RecyclerView.Adapter<NewsAda
             }
         }
     }
+
+    //class OnClickListener(val clickListener: (newsProperty:NewsProperty) -> Unit) {
+    //    fun onClick(newsProperty:NewsProperty){
+    //        clickListener(newsProperty)
+    //    }
+    //}
+
+    private fun createOnClickListener(newsProperty: NewsProperty, position: Int): View.OnClickListener {
+        return View.OnClickListener {
+            val newsListContainer = if (myNewsListContainer==NewsListContainer.TOPHEADLINES)
+                TopHeadlinesFragmentDirections.actionTopHeadlinesFragmentToDetailNewsFragment(newsProperty, position)
+            else
+                EverythingFragmentDirections.actionEverythingFragmentToDetailNewsFragment(newsProperty, position)
+            val extras = FragmentNavigatorExtras(
+                it.news_title to "title_$position",
+                it.news_author to "author_${position}",
+                it.news_description to "description_${position}"
+            )
+
+            it.findNavController().navigate(newsListContainer, extras)
+        }
+    }
+
 }

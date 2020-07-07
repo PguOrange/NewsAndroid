@@ -31,7 +31,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main )
 
-    val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
+    private val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
 
     private val dateDisplay = "--/--/----"
 
@@ -50,6 +50,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
     var tmpToDateUsed = false
 
     var currentQuery = sharedPreferences.getString("Query", "bitcoin")
+
 
     init {
         getEverythingProperties()
