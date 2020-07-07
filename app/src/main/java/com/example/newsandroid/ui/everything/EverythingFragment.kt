@@ -122,14 +122,19 @@ class EverythingFragment : Fragment() {
         val alertLayout: View = layoutInflater.inflate(R.layout.layout_custom_dialog, null)
         val alert = AlertDialog.Builder(context)
         val sortBy : List<SortBy> = listOf(
-            SortBy.Pertinence,
-            SortBy.Dernieres,
-            SortBy.Populaire
+            SortBy.Relevancy,
+            SortBy.PublishedAt,
+            SortBy.Popularity
+        )
+        var sortByFR : List<String> = listOf(
+            SortBy.Relevancy.displayFR,
+            SortBy.PublishedAt.displayFR,
+            SortBy.Popularity.displayFR
         )
         alert.setTitle("Filtre de recherche")
         alert.setView(alertLayout)
         alert.setCancelable(false)
-        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortBy)
+        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortByFR)
         // Set layout to use when the list of choices appear
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Set Adapter to Spinner
@@ -178,7 +183,7 @@ class EverythingFragment : Fragment() {
 
             //everythingViewModel.onFilterChanged(language, transformSpinnerStringToParametersApi(sort), languagePos, sortPos)
             Log.d("SelectedItemPosition", alertLayout.sp_sort.selectedItemPosition.toString() + " "+ sortBy[alertLayout.sp_sort.selectedItemPosition].toString() )
-            everythingViewModel.onFilterChanged(language, sortBy[alertLayout.sp_sort.selectedItemPosition].paramApi, languagePos, sortPos)
+            everythingViewModel.onFilterChanged(language, sortBy[alertLayout.sp_sort.selectedItemPosition].toString(), languagePos, sortPos)
             everythingViewModel.getEverythingProperties()
         }
 
