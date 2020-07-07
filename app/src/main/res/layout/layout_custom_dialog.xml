@@ -38,8 +38,7 @@
             android:id="@+id/sp_sort"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".7"
-            android:entries="@array/sort"/>
+            android:layout_weight=".7"/>
     </LinearLayout>
 
     <LinearLayout
