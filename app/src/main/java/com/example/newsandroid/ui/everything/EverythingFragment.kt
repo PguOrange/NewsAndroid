@@ -15,8 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
-import com.example.newsandroid.enums.Direction
-import com.example.newsandroid.enums.Category
+import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.enums.SortBy
 import com.example.newsandroid.factory.ViewModelFactory
@@ -82,7 +81,7 @@ class EverythingFragment : Fragment() {
 
         everythingViewModel.property.observe(viewLifecycleOwner, Observer {
             everything_news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            val adapter = NewsAdapter(it, Direction.EVERYTHING)
+            val adapter = NewsAdapter(it, NewsListContainer.EVERYTHING)
             everything_news_list.apply {
                 this.adapter = adapter
                 postponeEnterTransition()
