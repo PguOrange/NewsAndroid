@@ -3,10 +3,7 @@
     <string name="title_top_headlines">Top Headlines</string>
     <string name="title_everything">Everything</string>
     <string name="langage">Langage:</string>
-    <string name="trier_par">Trier par:</string>
-    <string name="date_debut">Date début:</string>
     <string name="null_date">--/--/----</string>
-    <string name="date_fin">Date fin:</string>
     <string name="image_for_internet_connection_status">Image for internet connection status</string>
     <string name="button_delete_from_date">button delete from date</string>
     <string name="button_add_from_date">button add from date</string>
@@ -14,7 +11,10 @@
     <string name="button_add_to_date">button add to date</string>
     <string name="filter_button_for_everything">filter button for everything</string>
     <string name="textTransitionName">textTransitionName</string>
+    <string name="actionbar_button_flag">ActionBar Button flag</string>
 
+    <string name="action_fr">FR</string>
+    <string name="action_us">US</string>
 
     <string-array name="language">
         <item>FR</item>

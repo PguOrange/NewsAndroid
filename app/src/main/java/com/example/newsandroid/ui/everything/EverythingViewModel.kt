@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
+import com.example.newsandroid.MyApp.Companion.globalLanguage
 
 
 class EverythingViewModel(application: Application) : ViewModel() {
@@ -37,7 +38,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     private val dateDisplay = "--/--/----"
 
-    var currentLanguage = sharedPreferences.getString("Language", "FR")
+    //var currentLanguage = sharedPreferences.getString("Language", "FR")
     var currentSort = sharedPreferences.getString("Sort", "relevancy")
     var currentLanguagePosition = sharedPreferences.getInt("LanguagePosition", 0)
     var currentSortPosition = sharedPreferences.getInt("SortPosition", 0)
@@ -69,8 +70,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                val size = if(currentLanguage=="ALL") newsRepository.refreshNewsEverything(query = currentQuery!!, page = currentPage!!, language = null, sort = currentSort!!, dateFrom = currentFromDate!!, dateTo = currentToDate!!)
-                else newsRepository.refreshNewsEverything(currentQuery!!, currentPage!!, currentLanguage!!.toLowerCase(Locale.ROOT),
+                val size = newsRepository.refreshNewsEverything(currentQuery!!, currentPage!!, globalLanguage.language.toLowerCase(Locale.ROOT),
                     currentSort!!, currentFromDate!!, currentToDate!!)
                 Log.d("refreshNews", "Everything News refreshed")
                 if(size==0) {
@@ -93,15 +93,10 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
 
 
-    fun onFilterChanged(language: String, sort: String, languagePos: Int, sortPos: Int){
-        currentLanguage = language
+    fun onFilterChanged(sort: String, sortPos: Int){
         currentSort = sort
-        currentLanguagePosition = languagePos
         currentSortPosition = sortPos
-
-        sharedPreferences.edit().putString("Language", language).apply()
         sharedPreferences.edit().putString("Sort", sort).apply()
-        sharedPreferences.edit().putInt("LanguagePosition", languagePos).apply()
         sharedPreferences.edit().putInt("SortPosition", sortPos).apply()
 
         itemCount = 0
@@ -144,8 +139,6 @@ class EverythingViewModel(application: Application) : ViewModel() {
     }
 
     fun onFilterReset(){
-        currentLanguage = "FR"
-        sharedPreferences.edit().putString("Language", "FR").apply()
         currentSort = "relevancy"
         sharedPreferences.edit().putString("Sort", "relevancy").apply()
         currentLanguagePosition = 0

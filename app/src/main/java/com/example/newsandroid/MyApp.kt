@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.work.*
+import com.example.newsandroid.enums.Language
 import com.example.newsandroid.work.RefreshDataWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +15,11 @@ import java.util.concurrent.TimeUnit
 class MyApp: Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
-        override fun onCreate() {
+    companion object {
+        var globalLanguage = Language.FR
+    }
+
+    override fun onCreate() {
             super.onCreate()
             delayedInit()
         }
