@@ -59,6 +59,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
     var isLoading = false
     var itemCount = 0
     var size = 0
+    private val apiNewsPerPage = 20
 
 
     init {
@@ -80,11 +81,11 @@ class EverythingViewModel(application: Application) : ViewModel() {
                         Log.d("refreshNews", "DONE EMPTY")
                         _status.value = NewsApiStatus.DONE_EMPTY
                     }
-                    size < 20 -> {
+                    size < apiNewsPerPage -> {
                         Log.d("refreshNews", "EndPage")
                         _status.value = NewsApiStatus.END_PAGE
                     }
-                    currentPage*20>=size -> {
+                    currentPage*apiNewsPerPage>=size -> {
                         Log.d("refreshNews", "EndPage")
                         _status.value = NewsApiStatus.END_PAGE
                     }
