@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.newsandroid.adapter.PaginationListener.Companion.PAGE_START
 import com.example.newsandroid.database.DBProvider
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.repository.NewsRepository
@@ -52,6 +53,14 @@ class EverythingViewModel(application: Application) : ViewModel() {
     var currentQuery = sharedPreferences.getString("Query", "bitcoin")
 
 
+    var currentPage: Int = PAGE_START
+    var isLastPage = false
+    var isLoading = false
+    var itemCount = 0
+    var size = 0
+    val apiNewsPerPage = 20
+
+
     init {
         getEverythingProperties()
     }
@@ -60,26 +69,46 @@ class EverythingViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                val size = if(currentLanguage=="ALL") newsRepository.refreshNewsEverything(query = currentQuery!!, language = null, sort = currentSort!!, dateFrom = currentFromDate!!, dateTo = currentToDate!!)
-                else newsRepository.refreshNewsEverything(currentQuery!!, currentLanguage!!.toLowerCase(Locale.ROOT),
-                    currentSort!!, currentFromDate!!, currentToDate!!)
-                Log.d("refreshNews", "Everything News refreshed")
-                if(size==0) {
-                    Log.d("refreshNews", "DONE EMPTY")
-                    _status.value = NewsApiStatus.DONE_EMPTY
-                }
-                else {
-                    _status.value = NewsApiStatus.DONE
-                    Log.d("refreshNews", "DONE")
+                size = newsRepository.refreshNewsEverything(
+                    currentQuery!!, currentPage, currentLanguage!!.toLowerCase(Locale.ROOT),
+                    currentSort!!, currentFromDate!!, currentToDate!!
+                )
+                Log.d("refreshNews", "Everything News refreshed " + size)
+
+                when {
+                    size == 0 -> {
+                        Log.d("refreshNews", "DONE EMPTY")
+                        _status.value = NewsApiStatus.DONE_EMPTY
+                    }
+                    size < apiNewsPerPage -> {
+                        Log.d("refreshNews", "EndPage")
+                        _status.value = NewsApiStatus.END_PAGE
+                    }
+                    currentPage*apiNewsPerPage>=size -> {
+                        Log.d("refreshNews", "EndPage")
+                        _status.value = NewsApiStatus.END_PAGE
+                    }
+                    else -> {
+                        _status.value = NewsApiStatus.DONE
+                        Log.d("refreshNews", "DONE")
+                    }
                 }
             }catch (e: Exception){
-                if (property.value.isNullOrEmpty())
-                    _status.value = NewsApiStatus.ERROR
-                else
-                    _status.value = NewsApiStatus.ERROR_WITH_CACHE
+                when {
+                    currentPage>1 -> _status.value = NewsApiStatus.END_PAGE
+                    property.value.isNullOrEmpty() -> {
+                        _status.value = NewsApiStatus.ERROR
+                    }
+                    else -> {
+                        _status.value = NewsApiStatus.ERROR_WITH_CACHE
+                    }
+                }
             }
         }
     }
+
+
+
 
     fun onFilterChanged(language: String, sort: String, languagePos: Int, sortPos: Int){
         currentLanguage = language
@@ -91,6 +120,10 @@ class EverythingViewModel(application: Application) : ViewModel() {
         sharedPreferences.edit().putString("Sort", sort).apply()
         sharedPreferences.edit().putInt("LanguagePosition", languagePos).apply()
         sharedPreferences.edit().putInt("SortPosition", sortPos).apply()
+
+        itemCount = 0
+        currentPage = PAGE_START
+        isLastPage = false
     }
 
     fun onFromDateChanged(fromDate: String, fromDateFR: String){
@@ -98,6 +131,9 @@ class EverythingViewModel(application: Application) : ViewModel() {
         currentFromDateFR = fromDateFR
         sharedPreferences.edit().putString("FromDate", fromDate).apply()
         sharedPreferences.edit().putString("FromDateFR", fromDateFR).apply()
+        itemCount = 0
+        currentPage = PAGE_START
+        isLastPage = false
     }
 
     fun onToDateChanged(toDate: String, toDateFR: String){
@@ -105,6 +141,9 @@ class EverythingViewModel(application: Application) : ViewModel() {
         currentToDateFR = toDateFR
         sharedPreferences.edit().putString("ToDate", toDate).apply()
         sharedPreferences.edit().putString("ToDateFR", toDateFR).apply()
+        itemCount = 0
+        currentPage = PAGE_START
+        isLastPage = false
     }
 
     fun onFromDateCanceled(){
@@ -132,6 +171,9 @@ class EverythingViewModel(application: Application) : ViewModel() {
         sharedPreferences.edit().putInt("SortPosition", 0).apply()
         onFromDateCanceled()
         onToDateCanceled()
+        itemCount = 0
+        currentPage = PAGE_START
+        isLastPage = false
     }
 
     fun onDateSelected(dateSelected : Date) {
@@ -147,6 +189,9 @@ class EverythingViewModel(application: Application) : ViewModel() {
     fun onQueryChanged(query: String){
         currentQuery = query
         sharedPreferences.edit().putString("Query", query).apply()
+        itemCount = 0
+        currentPage = PAGE_START
+        isLastPage = false
     }
 
     override fun onCleared() {

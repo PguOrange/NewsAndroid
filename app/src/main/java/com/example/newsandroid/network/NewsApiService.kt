@@ -12,7 +12,7 @@ interface NewsApiService {
             Deferred<NewsCollection>
 
     @GET("everything")
-    fun getEverything(@Query("q") q : String, @Query("language") language : String?, @Query("sortBy") sortBy : String, @Query("from") from : String?, @Query("to") to : String?, @Query("apiKey") apiKey : String = BuildConfig.ApiKey):
+    fun getEverything(@Query("q") q : String, @Query("page") page: Int, @Query("language") language : String?, @Query("sortBy") sortBy : String, @Query("from") from : String?, @Query("to") to : String?, @Query("pageSize") pageSize : Int = 20, @Query("apiKey") apiKey : String = BuildConfig.ApiKey):
             Deferred<NewsCollection>
 
 }

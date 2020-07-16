@@ -41,11 +41,11 @@ class NewsRepository(private val database: NewsDatabase, private val newsApiServ
         return size
     }
 
-    suspend fun refreshNewsEverything(query: String, language: String?, sort: String, dateFrom: String, dateTo: String): Int {
+    suspend fun refreshNewsEverything(query: String, page: Int, language: String?, sort: String, dateFrom: String, dateTo: String): Int {
         var size = 0
         withContext(Dispatchers.IO) {
             try {
-                val newsCollection = newsApiService?.getEverything(query, language, sort, dateFrom, dateTo)?.await()
+                val newsCollection = newsApiService?.getEverything(query, page, language, sort, dateFrom, dateTo)?.await()
                 if (newsCollection != null) {
                     database.newsDao.deleteAllEverything()
                     database.newsDao.insertAllEverything(convertAPIArticleToDBArticleET(newsCollection.articles))

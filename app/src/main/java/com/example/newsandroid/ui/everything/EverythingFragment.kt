@@ -14,21 +14,26 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsandroid.R
-import com.example.newsandroid.adapter.NewsAdapter
-import com.example.newsandroid.enums.NewsListContainer
+import com.example.newsandroid.adapter.NewsAdapterPagination
+import com.example.newsandroid.adapter.PaginationListener
+import com.example.newsandroid.adapter.PaginationListener.Companion.PAGE_START
 import com.example.newsandroid.enums.NewsApiStatus
+import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.enums.SortBy
 import com.example.newsandroid.factory.ViewModelFactory
 import kotlinx.android.synthetic.main.everything_fragment.*
 import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 enum class Option {FROMDATE, TODATE}
 class EverythingFragment : Fragment() {
 
     private var dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     private var dateFormatterUS = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    val adapter = NewsAdapterPagination(ArrayList(), NewsListContainer.EVERYTHING)
+
 
     private val everythingViewModel: EverythingViewModel by lazy {
         val application = requireNotNull(this.activity).application
@@ -43,6 +48,8 @@ class EverythingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.everything_fragment, container, false)
+
+
 
         everythingViewModel.status.observe(viewLifecycleOwner, Observer {
             it.let {
@@ -74,23 +81,30 @@ class EverythingFragment : Fragment() {
                         status_image_everything.visibility = View.GONE
                         Toast.makeText(activity, "Aucune News trouvée", Toast.LENGTH_LONG).show()
                     }
+                    NewsApiStatus.END_PAGE -> {
+                        status_image_everything.visibility = View.GONE
+                        everythingViewModel.isLastPage = true
+                        adapter.removeLoading()
+                    }
                     else -> {}
                 }
             }
         })
 
         everythingViewModel.property.observe(viewLifecycleOwner, Observer {
-            everything_news_list.layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
-            val adapter = NewsAdapter(it, NewsListContainer.EVERYTHING)
-            everything_news_list.apply {
-                this.adapter = adapter
-                postponeEnterTransition()
-                viewTreeObserver.addOnPreDrawListener {
-                    startPostponedEnterTransition()
-                    true
+            if (everythingViewModel.currentPage == 1) {
+                adapter.replaceItems(it)
+                searchView.queryHint = everythingViewModel.currentQuery
+                if (everythingViewModel.size>=everythingViewModel.apiNewsPerPage) adapter.addLoading()
+            }else{
+                if (everythingViewModel.currentPage != PAGE_START) adapter.removeLoading()
+                adapter.addItems(it.takeLast((everythingViewModel.currentPage-1)*everythingViewModel.apiNewsPerPage))
+                if (!everythingViewModel.isLastPage) {
+                    adapter.addLoading()
                 }
+                everythingViewModel.isLoading = false
+
             }
-            searchView.queryHint = everythingViewModel.currentQuery
         })
 
         return root
@@ -100,6 +114,9 @@ class EverythingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         swipe_refresh_layout_everything.setOnRefreshListener {
+            everythingViewModel.itemCount = 0
+            everythingViewModel.currentPage = PAGE_START
+            everythingViewModel.isLastPage = false
             everythingViewModel.getEverythingProperties()
             swipe_refresh_layout_everything.isRefreshing = false
         }
@@ -122,7 +139,43 @@ class EverythingFragment : Fragment() {
 
         })
 
+        val layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL, false)
+        everything_news_list.layoutManager = layoutManager
+        everything_news_list.adapter = adapter
+        /*
+        everything_news_list.apply {
+            this.adapter = adapter
+            postponeEnterTransition()
+            viewTreeObserver.addOnPreDrawListener {
+                startPostponedEnterTransition()
+                true
+            }
+        }
+        */
+
+        everything_news_list.addOnScrollListener(object : PaginationListener(layoutManager){
+            override fun loadMoreItems() {
+                everythingViewModel.isLoading = true
+                everythingViewModel.currentPage++
+                everythingViewModel.getEverythingProperties()
+                //adapter.addItems(it)
+
+
+            }
+
+            override fun isLastPage(): Boolean {
+                return everythingViewModel.isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return everythingViewModel.isLoading
+            }
+
+        })
+
     }
+
+
 
     private fun showDialog() {
         val alertLayout: View = layoutInflater.inflate(R.layout.layout_custom_dialog, null)
@@ -191,6 +244,7 @@ class EverythingFragment : Fragment() {
             Log.d("SelectedItemPosition", alertLayout.sp_sort.selectedItemPosition.toString() + " "+ sortBy[alertLayout.sp_sort.selectedItemPosition].toString() )
             everythingViewModel.onFilterChanged(language, sortBy[alertLayout.sp_sort.selectedItemPosition].toString(), languagePos, sortPos)
             everythingViewModel.getEverythingProperties()
+
         }
 
         alert.setNeutralButton(

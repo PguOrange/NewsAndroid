@@ -30,9 +30,6 @@ class NewsAdapter(private val items : List<NewsProperty>, private val newsListCo
 
     }
 
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(
             parent
@@ -66,12 +63,6 @@ class NewsAdapter(private val items : List<NewsProperty>, private val newsListCo
         }
     }
 
-    //class OnClickListener(val clickListener: (newsProperty:NewsProperty) -> Unit) {
-    //    fun onClick(newsProperty:NewsProperty){
-    //        clickListener(newsProperty)
-    //    }
-    //}
-
     private fun createOnClickListener(newsProperty: NewsProperty, position: Int): View.OnClickListener {
         return View.OnClickListener {
             val newsListContainer = if (myNewsListContainer==NewsListContainer.TOPHEADLINES)
@@ -87,5 +78,4 @@ class NewsAdapter(private val items : List<NewsProperty>, private val newsListCo
             it.findNavController().navigate(newsListContainer, extras)
         }
     }
-
 }
