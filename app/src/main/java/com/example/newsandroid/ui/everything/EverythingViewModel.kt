@@ -70,7 +70,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
             try {
                 _status.value = NewsApiStatus.LOADING
                 size = newsRepository.refreshNewsEverything(
-                    currentQuery!!, currentPage, currentLanguage!!.toLowerCase(Locale.ROOT),
+                    currentQuery!!, currentPage, globalLanguage.language.toLowerCase(Locale.ROOT),
                     currentSort!!, currentFromDate!!, currentToDate!!
                 )
                 Log.d("refreshNews", "Everything News refreshed " + size)
