@@ -59,8 +59,8 @@ class DetailNewsFragment : Fragment() {
 
             if (it.url.isNotEmpty())
             {
-                Picasso.with(context).load(detailNewsViewModel.uriImage).into(news_image_detail)
-                Picasso.with(context).load(detailNewsViewModel.uriImage).into(news_image_content_detail)
+                Picasso.with(context).load(detailNewsViewModel.uriImageString).into(news_image_detail)
+                Picasso.with(context).load(detailNewsViewModel.uriImageString).into(news_image_content_detail)
             }
             else
             {

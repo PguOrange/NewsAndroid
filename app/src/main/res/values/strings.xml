@@ -15,10 +15,4 @@
 
     <string name="action_fr">FR</string>
     <string name="action_us">US</string>
-
-    <string-array name="language">
-        <item>FR</item>
-        <item>EN</item>
-        <item>ALL</item>
-    </string-array>
 </resources>
