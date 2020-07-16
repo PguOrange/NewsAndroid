@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.newsandroid.adapter.PaginationListener.Companion.PAGE_START
 import com.example.newsandroid.database.DBProvider
-import com.example.newsandroid.domain.NewsProperty
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.repository.NewsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -57,9 +56,9 @@ class EverythingViewModel(application: Application) : ViewModel() {
 
     var currentPage: Int = PAGE_START
     var isLastPage = false
-    var totalPage = 20
     var isLoading = false
     var itemCount = 0
+    var size = 0
 
 
     init {
@@ -70,22 +69,40 @@ class EverythingViewModel(application: Application) : ViewModel() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                val size = newsRepository.refreshNewsEverything(currentQuery!!, currentPage!!, globalLanguage.language.toLowerCase(Locale.ROOT),
-                    currentSort!!, currentFromDate!!, currentToDate!!)
-                Log.d("refreshNews", "Everything News refreshed")
-                if(size==0) {
-                    Log.d("refreshNews", "DONE EMPTY")
-                    _status.value = NewsApiStatus.DONE_EMPTY
-                }
-                else {
-                    _status.value = NewsApiStatus.DONE
-                    Log.d("refreshNews", "DONE")
+                size = newsRepository.refreshNewsEverything(
+                    currentQuery!!, currentPage, globalLanguage.language.toLowerCase(Locale.ROOT),
+                    currentSort!!, currentFromDate!!, currentToDate!!
+                )
+                Log.d("refreshNews", "Everything News refreshed " + size)
+
+                when {
+                    size == 0 -> {
+                        Log.d("refreshNews", "DONE EMPTY")
+                        _status.value = NewsApiStatus.DONE_EMPTY
+                    }
+                    size < 20 -> {
+                        Log.d("refreshNews", "EndPage")
+                        _status.value = NewsApiStatus.END_PAGE
+                    }
+                    currentPage*20>=size -> {
+                        Log.d("refreshNews", "EndPage")
+                        _status.value = NewsApiStatus.END_PAGE
+                    }
+                    else -> {
+                        _status.value = NewsApiStatus.DONE
+                        Log.d("refreshNews", "DONE")
+                    }
                 }
             }catch (e: Exception){
-                if (property.value.isNullOrEmpty())
-                    _status.value = NewsApiStatus.ERROR
-                else
-                    _status.value = NewsApiStatus.ERROR_WITH_CACHE
+                when {
+                    currentPage>1 -> _status.value = NewsApiStatus.END_PAGE
+                    property.value.isNullOrEmpty() -> {
+                        _status.value = NewsApiStatus.ERROR
+                    }
+                    else -> {
+                        _status.value = NewsApiStatus.ERROR_WITH_CACHE
+                    }
+                }
             }
         }
     }
