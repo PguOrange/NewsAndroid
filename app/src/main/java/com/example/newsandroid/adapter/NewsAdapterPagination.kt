@@ -52,9 +52,10 @@ class NewsAdapterPagination (private var items : ArrayList<NewsProperty>, newsLi
         }
     }
 
-    fun addNewItems(postItems: List<NewsProperty>) {
+    fun replaceItems(itemsToReplace: List<NewsProperty>) {
+        if (isLoaderVisible) removeLoading()
         items.clear()
-        items.addAll(postItems)
+        items.addAll(itemsToReplace)
         notifyDataSetChanged()
     }
     fun addItems(postItems: List<NewsProperty>) {
@@ -83,11 +84,7 @@ class NewsAdapterPagination (private var items : ArrayList<NewsProperty>, newsLi
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (isLoaderVisible) {
-            if (position == items.size - 1) VIEW_TYPE_LOADING else VIEW_TYPE_NORMAL
-        } else {
-            VIEW_TYPE_NORMAL
-        }
+        return if (position == items.size - 1 && isLoaderVisible) VIEW_TYPE_LOADING else VIEW_TYPE_NORMAL
     }
 
     class ViewHolder(itemView: View) : BaseViewHolder(itemView){

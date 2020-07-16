@@ -85,6 +85,11 @@ class EverythingFragment : Fragment() {
                         status_image_everything.visibility = View.GONE
                         Toast.makeText(activity, "Aucune News trouvée", Toast.LENGTH_LONG).show()
                     }
+                    NewsApiStatus.END_PAGE -> {
+                        status_image_everything.visibility = View.GONE
+                        everythingViewModel.isLastPage = true
+                        adapter.removeLoading()
+                    }
                     else -> {}
                 }
             }
@@ -92,18 +97,17 @@ class EverythingFragment : Fragment() {
 
         everythingViewModel.property.observe(viewLifecycleOwner, Observer {
             if (everythingViewModel.currentPage == 1) {
-                adapter.addNewItems(it)
-                adapter.addLoading()
+                adapter.replaceItems(it)
                 searchView.queryHint = everythingViewModel.currentQuery
+                if (everythingViewModel.size>=20) adapter.addLoading()
             }else{
                 if (everythingViewModel.currentPage != PAGE_START) adapter.removeLoading()
                 adapter.addItems(it.takeLast((everythingViewModel.currentPage-1)*20))
-                if (everythingViewModel.currentPage < everythingViewModel.totalPage) {
+                if (!everythingViewModel.isLastPage) {
                     adapter.addLoading()
-                } else {
-                    everythingViewModel.isLastPage = true
                 }
                 everythingViewModel.isLoading = false
+
             }
         })
 
@@ -270,6 +274,7 @@ class EverythingFragment : Fragment() {
             Log.d("SelectedItemPosition", alertLayout.sp_sort.selectedItemPosition.toString() + " "+ sortBy[alertLayout.sp_sort.selectedItemPosition].toString() )
             everythingViewModel.onFilterChanged(sortBy[alertLayout.sp_sort.selectedItemPosition].toString(), sortPos)
             everythingViewModel.getEverythingProperties()
+
         }
 
         alert.setNeutralButton(
