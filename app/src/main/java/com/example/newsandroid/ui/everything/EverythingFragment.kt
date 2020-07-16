@@ -17,7 +17,6 @@ import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapterPagination
 import com.example.newsandroid.adapter.PaginationListener
 import com.example.newsandroid.adapter.PaginationListener.Companion.PAGE_START
-import com.example.newsandroid.domain.NewsProperty
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.enums.NewsListContainer
 import com.example.newsandroid.enums.SortBy
@@ -89,7 +88,7 @@ class EverythingFragment : Fragment() {
 
         everythingViewModel.property.observe(viewLifecycleOwner, Observer {
             if (everythingViewModel.currentPage == 1) {
-                adapter.addNewItems(it)
+                adapter.replaceItems(it)
                 adapter.addLoading()
                 searchView.queryHint = everythingViewModel.currentQuery
             }else{

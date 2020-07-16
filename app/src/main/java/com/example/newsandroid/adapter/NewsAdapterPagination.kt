@@ -52,9 +52,9 @@ class NewsAdapterPagination (private var items : ArrayList<NewsProperty>, newsLi
         }
     }
 
-    fun addNewItems(postItems: List<NewsProperty>) {
+    fun replaceItems(itemsToReplace: List<NewsProperty>) {
         items.clear()
-        items.addAll(postItems)
+        items.addAll(itemsToReplace)
         notifyDataSetChanged()
     }
     fun addItems(postItems: List<NewsProperty>) {
