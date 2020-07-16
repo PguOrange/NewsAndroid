@@ -53,6 +53,7 @@ class NewsAdapterPagination (private var items : ArrayList<NewsProperty>, newsLi
     }
 
     fun replaceItems(itemsToReplace: List<NewsProperty>) {
+        if (isLoaderVisible) removeLoading()
         items.clear()
         items.addAll(itemsToReplace)
         notifyDataSetChanged()
