@@ -58,7 +58,7 @@ class EverythingViewModel(application: Application) : ViewModel() {
     var isLoading = false
     var itemCount = 0
     var size = 0
-    private val apiNewsPerPage = 20
+    val apiNewsPerPage = 20
 
 
     init {

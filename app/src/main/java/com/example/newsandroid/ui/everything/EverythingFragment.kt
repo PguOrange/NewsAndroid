@@ -95,10 +95,10 @@ class EverythingFragment : Fragment() {
             if (everythingViewModel.currentPage == 1) {
                 adapter.replaceItems(it)
                 searchView.queryHint = everythingViewModel.currentQuery
-                if (everythingViewModel.size>=20) adapter.addLoading()
+                if (everythingViewModel.size>=everythingViewModel.apiNewsPerPage) adapter.addLoading()
             }else{
                 if (everythingViewModel.currentPage != PAGE_START) adapter.removeLoading()
-                adapter.addItems(it.takeLast((everythingViewModel.currentPage-1)*20))
+                adapter.addItems(it.takeLast((everythingViewModel.currentPage-1)*everythingViewModel.apiNewsPerPage))
                 if (!everythingViewModel.isLastPage) {
                     adapter.addLoading()
                 }
