@@ -23,6 +23,10 @@ android {
         }
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -77,4 +81,7 @@ dependencies {
 
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
+    testImplementation "io.mockk:mockk:$mockkVersion"
+
+    testImplementation "android.arch.core:core-testing:1.0.0"
 }
