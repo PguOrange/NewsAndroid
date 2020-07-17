@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.newsandroid.MainActivity
+import com.example.newsandroid.MainActivity.FragmentRefreshListener
+import com.example.newsandroid.MyApp
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapterPagination
 import com.example.newsandroid.adapter.PaginationListener
@@ -26,6 +29,7 @@ import kotlinx.android.synthetic.main.layout_custom_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 enum class Option {FROMDATE, TODATE}
 class EverythingFragment : Fragment() {
@@ -104,6 +108,14 @@ class EverythingFragment : Fragment() {
                 }
                 everythingViewModel.isLoading = false
 
+            }
+        })
+
+        (activity as MainActivity?)!!.setFragmentRefreshListener(object :
+            FragmentRefreshListener {
+            override fun onRefresh() {
+
+                everythingViewModel.getEverythingProperties()
             }
         })
 
@@ -190,10 +202,44 @@ class EverythingFragment : Fragment() {
             SortBy.PublishedAt.displayFR,
             SortBy.Popularity.displayFR
         )
-        alert.setTitle("Filtre de recherche")
+        var sortByUS : List<SortBy> = listOf(
+            SortBy.Relevancy,
+            SortBy.PublishedAt,
+            SortBy.Popularity
+        )
+        /*
+        if (MyApp.globalLanguage.language=="FR") {
+            alert.setTitle("Filtre de recherche")
+            alert.setTitle(getString(R.string.titleFR))
+            alertLayout.sort_by.text ="Trier par :"
+            alertLayout.from_date.text = "Date début:"
+            alertLayout.to_date.text = "Date fin:"
+        }else {
+            alert.setTitle("Search filter")
+            alertLayout.sort_by.text ="Sort by:"
+            alertLayout.from_date.text = "From date:"
+            alertLayout.to_date.text = "To date:"
+        }
+
+         */
+
+        alert.setTitle(getString(R.string.title))
+        alertLayout.sort_by.text = getString(R.string.sort_by)
+        alertLayout.from_date.text = getString(R.string.from_date)
+        alertLayout.to_date.text = getString(R.string.to_date)
+
         alert.setView(alertLayout)
         alert.setCancelable(false)
-        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortByFR)
+        /*
+        val aa = if (MyApp.globalLanguage.language=="FR")
+         ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortByFR)
+        else
+        ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortByUS)
+
+         */
+
+        val aa = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sort_by_array))
+
         // Set layout to use when the list of choices appear
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Set Adapter to Spinner
@@ -201,12 +247,20 @@ class EverythingFragment : Fragment() {
 
         if (everythingViewModel.currentFromDate=="") alertLayout.button_delete_date.visibility = View.GONE
         if (everythingViewModel.currentToDate=="") alertLayout.button_delete_to_date.visibility = View.GONE
-        alertLayout.sp_language.setSelection(everythingViewModel.currentLanguagePosition)
         alertLayout.sp_sort.setSelection(everythingViewModel.currentSortPosition)
+
         alertLayout.date_text.text = everythingViewModel.currentFromDateFR
         alertLayout.to_date_text.text = everythingViewModel.currentToDateFR
+
         alert.setNegativeButton(
-            "Annuler"
+            /*
+            if (MyApp.globalLanguage.language=="FR")
+                "Annuler"
+            else
+                "Cancel"
+
+             */
+            getString(R.string.cancel)
         ) { dialog, which ->
 
         }
@@ -214,8 +268,6 @@ class EverythingFragment : Fragment() {
         alert.setPositiveButton(
             "OK"
         ) { dialog, which ->
-            val language = alertLayout.sp_language.selectedItem.toString()
-            val languagePos = alertLayout.sp_language.selectedItemPosition
             val sortPos = alertLayout.sp_sort.selectedItemPosition
 
             if (alertLayout.date_text.text.toString() != "--/--/----") {
@@ -242,13 +294,20 @@ class EverythingFragment : Fragment() {
 
             //everythingViewModel.onFilterChanged(language, transformSpinnerStringToParametersApi(sort), languagePos, sortPos)
             Log.d("SelectedItemPosition", alertLayout.sp_sort.selectedItemPosition.toString() + " "+ sortBy[alertLayout.sp_sort.selectedItemPosition].toString() )
-            everythingViewModel.onFilterChanged(language, sortBy[alertLayout.sp_sort.selectedItemPosition].toString(), languagePos, sortPos)
+            everythingViewModel.onFilterChanged(sortBy[alertLayout.sp_sort.selectedItemPosition].toString(), sortPos)
             everythingViewModel.getEverythingProperties()
 
         }
 
         alert.setNeutralButton(
-            "Réinitialiser"
+/*
+            if (MyApp.globalLanguage.language=="FR")
+                "Réinitialiser"
+            else
+                "Reset"
+
+ */
+            getString(R.string.reset)
         ) { dialog, which ->
             everythingViewModel.onFilterReset()
             everythingViewModel.getEverythingProperties()
@@ -288,7 +347,10 @@ class EverythingFragment : Fragment() {
             OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 val newDate: Calendar = Calendar.getInstance()
                 newDate.set(year, monthOfYear, dayOfMonth)
-                text.text = dateFormatter.format(newDate.time)
+                text.text = if (MyApp.globalLanguage.language=="FR")
+                        dateFormatter.format(newDate.time)
+                    else
+                        dateFormatterUS.format(newDate.time)
                 if (option==Option.FROMDATE) everythingViewModel.onDateSelected(newDate.time)
                 else everythingViewModel.onToDateSelected(newDate.time)
                 button.visibility = View.VISIBLE

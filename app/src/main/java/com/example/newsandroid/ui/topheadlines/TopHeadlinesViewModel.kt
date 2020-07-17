@@ -5,11 +5,8 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.newsandroid.R
-import com.example.newsandroid.adapter.CustomAdapterSpinner
 import com.example.newsandroid.database.DBProvider
 import com.example.newsandroid.enums.Category
-import com.example.newsandroid.enums.Country
 import com.example.newsandroid.enums.NewsApiStatus
 import com.example.newsandroid.repository.NewsRepository
 import com.example.newsandroid.util.createChipCategoryList
@@ -17,31 +14,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import com.example.newsandroid.MyApp.Companion.globalLanguage
 
 
 
 
 class TopHeadlinesViewModel(application: Application) : ViewModel() {
 
-    private val imageSpinner = arrayOf(
-        R.drawable.fr,
-        R.drawable.us
-    )
-
-    private val imageNameSpinner = arrayOf(
-        "FR", "US"
-    )
-
-    val spinnerCustomAdapter = CustomAdapterSpinner(application, imageSpinner, imageNameSpinner)
-
 
     private val errorApiMessage = "HTTP 400 Bad Request"
 
     private val sharedPreferences = application.getSharedPreferences("com.exemple.newsAndroid", Context.MODE_PRIVATE)
 
-    var currentCountry = sharedPreferences.getString("Country", Country.FR.value)
     var currentCategory = sharedPreferences.getString("Category", Category.GENERAL.value)
-    var currentPositionCountry = sharedPreferences.getInt("CountryPosition", Country.FR.position)
 
     private val newsRepository = NewsRepository(DBProvider.getDatabase(application))
 
@@ -83,29 +68,11 @@ class TopHeadlinesViewModel(application: Application) : ViewModel() {
         }
     }
 
-
-    fun changeCurrentCountry() {
-        if (currentCountry == Country.FR.value){
-            currentCountry = Country.US.value
-            currentPositionCountry = Country.US.position
-        }
-        else {
-            currentCountry = Country.FR.value
-            currentPositionCountry = Country.FR.position
-        }
-        sharedPreferences.edit().putString("Country", currentCountry).apply()
-        sharedPreferences.edit().putInt("CountryPosition", currentPositionCountry).apply()
-    }
-
-    fun onCountryChanged(){
-        refreshList()
-    }
-
     private fun refreshList() {
         coroutineScope.launch {
             try {
                 _status.value = NewsApiStatus.LOADING
-                if(newsRepository.refreshNewsTopHeadlines(currentCountry!!, currentCategory) !=0){
+                if(newsRepository.refreshNewsTopHeadlines(globalLanguage.country, currentCategory) !=0){
                     _status.value = NewsApiStatus.DONE
                 }
                 else{

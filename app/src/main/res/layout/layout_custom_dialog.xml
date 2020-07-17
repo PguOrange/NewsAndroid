@@ -12,28 +12,10 @@
         android:orientation="horizontal"
         android:layout_marginBottom="20dp">
         <TextView
+            android:id="@+id/sort_by"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".3"
-            android:text="@string/langage" />
-        <Spinner
-            android:id="@+id/sp_language"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".7"
-            android:entries="@array/language"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginBottom="20dp">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".3"
-            android:text="@string/trier_par" />
+            android:layout_weight=".3"/>
         <Spinner
             android:id="@+id/sp_sort"
             android:layout_width="0dp"
@@ -48,10 +30,10 @@
         android:orientation="horizontal"
         android:layout_marginBottom="20dp">
         <TextView
+            android:id="@+id/from_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".3"
-            android:text="@string/date_debut" />
+            android:layout_weight=".3"/>
         <TextView
             android:id="@+id/date_text"
             android:layout_width="0dp"
@@ -91,10 +73,10 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/to_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".3"
-            android:text="@string/date_fin" />
+            android:layout_weight=".3"/>
         <TextView
             android:id="@+id/to_date_text"
             android:layout_width="0dp"

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_fr"
+        android:title="@string/action_fr"
+        android:icon="@drawable/ic_france"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_us"
+        android:title="@string/action_us"
+        android:icon="@drawable/ic_united_states"
+        app:showAsAction="never"/>
+</menu>

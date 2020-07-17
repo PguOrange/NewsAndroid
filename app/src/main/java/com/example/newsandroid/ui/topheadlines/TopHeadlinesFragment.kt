@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.newsandroid.MainActivity
 import com.example.newsandroid.R
 import com.example.newsandroid.adapter.NewsAdapter
 import com.example.newsandroid.enums.NewsListContainer
@@ -112,37 +113,19 @@ class TopHeadlinesFragment : Fragment() {
 
         })
 
+        (activity as MainActivity?)!!.setFragmentRefreshListener(object :
+            MainActivity.FragmentRefreshListener {
+            override fun onRefresh() {
 
+                topHeadlinesViewModel.getTopHeadlinesProperties()
+            }
+        })
 
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        country_spinner.adapter = topHeadlinesViewModel.spinnerCustomAdapter
-
-        var check = 0
-
-        country_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(++check>1) {
-                    topHeadlinesViewModel.changeCurrentCountry()
-                    topHeadlinesViewModel.onCountryChanged()
-                } else {
-                    if (country_spinner.selectedItemPosition != topHeadlinesViewModel.currentPositionCountry){
-                        country_spinner.setSelection(topHeadlinesViewModel.currentPositionCountry)
-                        --check
-                    }
-                }
-            }
-
-        }
         swipe_refresh_recycler.setOnRefreshListener {
             topHeadlinesViewModel.getTopHeadlinesProperties()
             swipe_refresh_recycler.isRefreshing = false
