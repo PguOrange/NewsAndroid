@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Search filter</string>
+    <string name="sort_by">Sort by:</string>
+    <string name="from_date">From date:</string>
+    <string name="to_date">To date:</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset</string>
+
+    <string-array name="sort_by_array">
+        <item>Relevancy</item>
+        <item>Published at</item>
+        <item>Popularity</item>
+    </string-array>
+</resources>

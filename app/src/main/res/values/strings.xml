@@ -1,18 +1,33 @@
 <resources>
-    <string name="app_name">NewsAndroid</string>
-    <string name="title_top_headlines">Top Headlines</string>
-    <string name="title_everything">Everything</string>
-    <string name="langage">Langage:</string>
-    <string name="null_date">--/--/----</string>
-    <string name="image_for_internet_connection_status">Image for internet connection status</string>
-    <string name="button_delete_from_date">button delete from date</string>
-    <string name="button_add_from_date">button add from date</string>
-    <string name="button_delete_to_date">button delete to date</string>
-    <string name="button_add_to_date">button add to date</string>
-    <string name="filter_button_for_everything">filter button for everything</string>
-    <string name="textTransitionName">textTransitionName</string>
-    <string name="actionbar_button_flag">ActionBar Button flag</string>
+    <string name="app_name" translatable="false">NewsAndroid</string>
+    <string name="title_top_headlines" translatable="false">Top Headlines</string>
+    <string name="title_everything" translatable="false">Everything</string>
+    <string name="langage" translatable="false">Langage:</string>
+    <string name="null_date" translatable="false">--/--/----</string>
+    <string name="image_for_internet_connection_status" translatable="false">Image for internet connection status</string>
+    <string name="button_delete_from_date" translatable="false">button delete from date</string>
+    <string name="button_add_from_date" translatable="false">button add from date</string>
+    <string name="button_delete_to_date" translatable="false">button delete to date</string>
+    <string name="button_add_to_date" translatable="false">button add to date</string>
+    <string name="filter_button_for_everything" translatable="false">filter button for everything</string>
+    <string name="textTransitionName" translatable="false">textTransitionName</string>
+    <string name="actionbar_button_flag" translatable="false">ActionBar Button flag</string>
 
-    <string name="action_fr">FR</string>
-    <string name="action_us">US</string>
+    <string name="action_fr" translatable="false">FR</string>
+    <string name="action_us" translatable="false">US</string>
+
+    <string name="title">Filtre de recherche</string>
+    <string name="sort_by">Trier par :</string>
+    <string name="from_date">Date début:</string>
+    <string name="to_date">Date fin:</string>
+
+    <string name="cancel">Annuler</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="language_app" translatable="false">language</string>
+
+    <string-array name="sort_by_array">
+        <item>Pertinence</item>
+        <item>Dernières News</item>
+        <item>Populaire</item>
+    </string-array>
 </resources>
